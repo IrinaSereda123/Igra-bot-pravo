@@ -2,294 +2,794 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Основы алгоритмизации и программирования</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             min-height: 100vh;
-            padding: 20px;
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', 'Segoe UI', sans-serif;
             color: #333;
+            overflow-x: hidden;
+            touch-action: manipulation;
         }
         
+        /* Улучшенный контейнер для мобильных */
         .game-container {
-            max-width: 800px;
+            max-width: 100%;
+            min-height: 100vh;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
         }
         
+        @media (min-width: 768px) {
+            .game-container {
+                max-width: 800px;
+                min-height: auto;
+                border-radius: 25px;
+                margin: 20px auto;
+                padding: 30px;
+            }
+        }
+        
+        /* Хедер с анимацией */
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             padding-bottom: 20px;
-            border-bottom: 2px solid #eee;
+            border-bottom: 3px dashed #4a6ee0;
+            position: relative;
         }
         
         .header h1 {
             color: #2c3e50;
             margin-bottom: 10px;
+            font-size: 1.8rem;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+                gap: 10px;
+            }
         }
         
         .header .subtitle {
             color: #7f8c8d;
-            font-size: 1.1rem;
+            font-size: 1rem;
+            font-weight: 500;
         }
         
+        .header::after {
+            content: "🎮";
+            position: absolute;
+            right: 0;
+            top: 0;
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Статистика в виде карточек */
         .stats {
-            display: flex;
-            justify-content: space-between;
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
             margin-bottom: 30px;
-            font-weight: bold;
+            text-align: center;
         }
         
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 10px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card .number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Блок вопроса */
         .question-block {
             background: #f8f9fa;
             padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            border-left: 5px solid #3498db;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            border-left: 8px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .question-block::before {
+            content: "❓";
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            font-size: 2rem;
+            opacity: 0.1;
         }
         
         .question-text {
             font-size: 1.3rem;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             line-height: 1.5;
+            color: #2c3e50;
+            font-weight: 600;
         }
         
-        /* Типы вопросов */
-        .single-choice, .multiple-choice {
+        @media (max-width: 480px) {
+            .question-text {
+                font-size: 1.1rem;
+            }
+        }
+        
+        /* Типы вопросов - унифицированные */
+        .options-container {
             display: flex;
             flex-direction: column;
             gap: 12px;
+            margin-top: 20px;
         }
         
-        .option {
+        /* Кнопки вариантов ответов для всех типов вопросов */
+        .option-btn {
             background: white;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            padding: 18px;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            padding: 18px 20px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             align-items: center;
             gap: 15px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            min-height: 70px;
         }
         
-        .option:hover {
+        .option-btn:hover, .option-btn:active {
             border-color: #3498db;
             background: #e3f2fd;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(52, 152, 219, 0.2);
         }
         
-        .option.selected {
+        .option-btn.selected {
             border-color: #2ecc71;
             background: #d4edda;
+            transform: scale(1.02);
         }
         
-        .option.correct {
+        .option-btn.correct {
             border-color: #27ae60;
             background: #d4edda;
+            animation: pulse 0.5s;
         }
         
-        .option.incorrect {
+        .option-btn.incorrect {
             border-color: #e74c3c;
             background: #fadbd8;
         }
         
-        .checkbox {
-            width: 24px;
-            height: 24px;
-            border: 2px solid #3498db;
-            border-radius: 4px;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .option-number {
+            background: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+        
+        .option-btn.selected .option-number {
+            background: #2ecc71;
+        }
+        
+        /* Для множественного выбора */
+        .checkbox {
+            width: 28px;
+            height: 28px;
+            border: 3px solid #3498db;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: white;
+        }
+        
+        .checkbox.checked {
+            background: #3498db;
+            border-color: #3498db;
         }
         
         .checkbox.checked::after {
             content: '✓';
-            color: #27ae60;
+            color: white;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 1.2rem;
         }
         
-        .matching-container {
+        /* Улучшенное соотнесение для мобильных (без перетаскивания) */
+        .matching-mobile {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 15px;
             margin: 20px 0;
         }
         
-        @media (max-width: 768px) {
-            .matching-container {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .matching-column {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .matching-item {
-            background: white;
-            border: 2px solid #3498db;
-            border-radius: 10px;
-            padding: 15px;
-            cursor: move;
-            text-align: center;
-            font-weight: 500;
-        }
-        
-        .matching-item.dragging {
-            opacity: 0.5;
-        }
-        
-        .drop-zone {
-            min-height: 60px;
-            border: 2px dashed #7f8c8d;
-            border-radius: 10px;
+        .matching-pair {
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 15px;
-            text-align: center;
-            color: #7f8c8d;
-            transition: all 0.3s;
-        }
-        
-        .drop-zone.filled {
-            border: 2px solid #2ecc71;
-            background: #d4edda;
-            color: #333;
-        }
-        
-        .drop-zone.over {
-            border-color: #f39c12;
-            background: #fef5e7;
-        }
-        
-        .controls {
-            display: flex;
             gap: 15px;
-            margin-top: 30px;
             flex-wrap: wrap;
         }
         
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
+        .matching-term {
             flex: 1;
             min-width: 150px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         
-        .btn-success {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            color: white;
+        .matching-arrow {
+            font-size: 1.5rem;
+            color: #3498db;
         }
         
-        .btn-warning {
-            background: linear-gradient(135deg, #f39c12, #d35400);
-            color: white;
+        .matching-dropdown {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px;
+            border: 3px solid #3498db;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            font-weight: 500;
+            text-align: center;
         }
         
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        
-        .explanation {
+        .matching-dropdown.selected {
             background: #e3f2fd;
-            border-left: 4px solid #3498db;
+            border-color: #2ecc71;
+        }
+        
+        /* Новый тип: Последовательность */
+        .sequence-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .sequence-item {
+            background: white;
+            border: 3px solid #f39c12;
+            border-radius: 15px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: move;
+            font-size: 1.1rem;
+            font-weight: 500;
+            position: relative;
+            transition: transform 0.3s;
+            min-height: 70px;
+        }
+        
+        .sequence-item.dragging {
+            opacity: 0.5;
+            transform: scale(1.05);
+        }
+        
+        .sequence-number {
+            background: #f39c12;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+        
+        .sequence-handle {
+            margin-left: auto;
+            color: #7f8c8d;
+            font-size: 1.5rem;
+        }
+        
+        /* Новый тип: Заполнение пропусков */
+        .fill-blanks {
+            background: #fef9e7;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 3px dashed #f1c40f;
+        }
+        
+        .blank-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        
+        .blank {
+            display: inline-block;
+            min-width: 120px;
+            padding: 10px 15px;
+            margin: 0 5px;
+            border: 2px dashed #7f8c8d;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .blank.filled {
+            border: 2px solid #3498db;
+            background: #e3f2fd;
+        }
+        
+        .blank-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .blank-option {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #3498db;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .blank-option:hover {
+            background: #3498db;
+            color: white;
+        }
+        
+        .blank-option.used {
+            opacity: 0.5;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+        
+        /* Новый тип: Найди ошибку */
+        .find-error {
+            background: #fff5f5;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 3px solid #e74c3c;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .code-line {
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 1.1rem;
+        }
+        
+        .code-line:hover {
+            background: rgba(231, 76, 60, 0.1);
+        }
+        
+        .code-line.selected {
+            background: rgba(231, 76, 60, 0.2);
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .line-number {
+            color: #7f8c8d;
+            font-weight: bold;
+            min-width: 30px;
+        }
+        
+        /* Новый тип: Собери программу */
+        .build-program {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .code-block {
+            background: white;
+            border: 3px solid #9b59b6;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: move;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .code-block:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(155, 89, 182, 0.2);
+        }
+        
+        .program-area {
+            grid-column: 1 / -1;
+            min-height: 200px;
+            border: 3px dashed #9b59b6;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        
+        .program-area .code-block {
+            margin: 5px;
+        }
+        
+        /* Объяснение */
+        .explanation {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 6px solid #3498db;
             padding: 20px;
             margin: 20px 0;
-            border-radius: 8px;
+            border-radius: 15px;
             display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .explanation.show {
             display: block;
         }
         
+        .explanation h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Управление */
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+            position: sticky;
+            bottom: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+        
+        @media (max-width: 480px) {
+            .controls {
+                grid-template-columns: 1fr;
+                position: fixed;
+                left: 20px;
+                right: 20px;
+                bottom: 10px;
+            }
+        }
+        
+        .btn {
+            padding: 18px 25px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 60px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12, #d35400);
+            color: white;
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        /* Экран результатов */
         .result-screen {
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
+            animation: fadeIn 1s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .result-icon {
-            font-size: 4rem;
+            font-size: 5rem;
             margin-bottom: 20px;
+            animation: celebrate 2s infinite;
+        }
+        
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.2) rotate(-10deg); }
+            50% { transform: scale(1.2) rotate(10deg); }
+            75% { transform: scale(1.2) rotate(-10deg); }
         }
         
         .progress-bar {
-            height: 10px;
+            height: 20px;
             background: #ecf0f1;
-            border-radius: 5px;
-            margin: 20px 0;
+            border-radius: 10px;
+            margin: 30px 0;
             overflow: hidden;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
         }
         
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #2ecc71, #27ae60);
-            border-radius: 5px;
-            transition: width 0.5s ease;
+            border-radius: 10px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
         }
         
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.4),
+                transparent
+            );
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Адаптивные улучшения */
         @media (max-width: 768px) {
             .game-container {
+                padding: 15px;
+            }
+            
+            .question-block {
                 padding: 20px;
             }
             
-            .controls {
-                flex-direction: column;
+            .option-btn {
+                padding: 16px;
+                min-height: 60px;
+                font-size: 1rem;
             }
             
             .btn {
-                width: 100%;
+                padding: 16px;
+                font-size: 1rem;
+                min-height: 55px;
             }
+            
+            .matching-pair {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .matching-term, .matching-dropdown {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .matching-arrow {
+                transform: rotate(90deg);
+            }
+        }
+        
+        /* Для очень маленьких экранов */
+        @media (max-width: 360px) {
+            .header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .stat-card {
+                padding: 12px 8px;
+            }
+            
+            .stat-card .number {
+                font-size: 1.5rem;
+            }
+            
+            .question-text {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Улучшенная анимация появления */
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Подсказки */
+        .hint-bubble {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #f39c12;
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
+            display: none;
+            z-index: 1000;
+            max-width: 300px;
+            animation: slideInRight 0.5s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .hint-bubble.show {
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="game-container" id="gameContainer">
         <div class="header">
-            <h1>🎮 Основы алгоритмизации и программирования</h1>
-            <p class="subtitle">Интерактивные задания для проверки знаний</p>
+            <h1><i class="fas fa-robot"></i> Программирование для детей</h1>
+            <p class="subtitle">Учимся кодить весело и интересно!</p>
         </div>
         
         <div class="stats" id="stats">
-            <div>Вопрос: <span id="questionNumber">1</span>/5</div>
-            <div>Баллы: <span id="score">0</span></div>
-            <div>Правильно: <span id="correct">0</span></div>
+            <div class="stat-card">
+                <span class="number" id="questionNumber">1</span>
+                <span class="label">ВОПРОС</span>
+            </div>
+            <div class="stat-card">
+                <span class="number" id="score">0</span>
+                <span class="label">БАЛЛЫ</span>
+            </div>
+            <div class="stat-card">
+                <span class="number" id="correct">0</span>
+                <span class="label">ПРАВИЛЬНО</span>
+            </div>
         </div>
         
-        <div class="question-block" id="questionBlock">
+        <div class="question-block fade-in" id="questionBlock">
             <div class="question-text" id="questionText">
                 Загрузка вопроса...
             </div>
@@ -299,15 +799,25 @@
             </div>
             
             <div class="explanation" id="explanation">
-                <strong>📚 Объяснение:</strong>
+                <h4><i class="fas fa-lightbulb"></i> ОБЪЯСНЕНИЕ:</h4>
                 <p id="explanationText"></p>
             </div>
         </div>
         
         <div class="controls">
-            <button class="btn btn-warning" id="hintBtn">💡 Подсказка</button>
-            <button class="btn btn-primary" id="checkBtn">✅ Проверить</button>
-            <button class="btn btn-success" id="nextBtn" style="display: none;">➡️ Далее</button>
+            <button class="btn btn-warning" id="hintBtn">
+                <i class="fas fa-lightbulb"></i> Подсказка
+            </button>
+            <button class="btn btn-primary" id="checkBtn">
+                <i class="fas fa-check"></i> Проверить
+            </button>
+            <button class="btn btn-success" id="nextBtn" style="display: none;">
+                <i class="fas fa-arrow-right"></i> Далее
+            </button>
+        </div>
+        
+        <div class="hint-bubble" id="hintBubble">
+            Подсказка появится здесь!
         </div>
     </div>
 
@@ -317,75 +827,108 @@
         tg.expand();
         tg.ready();
         
-        // Данные игры
+        // Новые типы вопросов для детей
         const questions = [
             {
                 type: 'single',
                 question: 'Что такое алгоритм?',
                 options: [
-                    'Последовательность команд для ЭВМ',
+                    'Последовательность команд для компьютера',
                     'Программа на языке программирования',
                     'Точное предписание, определяющее процесс преобразования информации',
                     'Математическая формула'
                 ],
                 correct: 2,
-                explanation: 'Алгоритм - это конечная последовательность четко определенных действий, решающая конкретную задачу.'
-            },
-            {
-                type: 'single',
-                question: 'Какое свойство НЕ является свойством алгоритма?',
-                options: [
-                    'Дискретность',
-                    'Неопределенность',
-                    'Результативность',
-                    'Массовость'
-                ],
-                correct: 1,
-                explanation: 'Алгоритм должен быть определенным (однозначным), неопределенность не допускается.'
+                explanation: 'Алгоритм - это пошаговая инструкция для решения задачи. Как рецепт приготовления торта! 🎂'
             },
             {
                 type: 'multiple',
-                question: 'Какие типы данных относятся к простым (скалярным)?',
+                question: 'Какие типы циклов ты знаешь? (Выбери все правильные)',
                 options: [
-                    'Целые числа',
-                    'Массивы',
-                    'Строки',
-                    'Вещественные числа',
-                    'Записи',
-                    'Логические значения'
+                    'Цикл "пока" (while)',
+                    'Цикл "для" (for)',
+                    'Цикл "до тех пор" (do-while)',
+                    'Бесконечный цикл (осторожно!)'
                 ],
-                correct: [0, 2, 3, 5],
-                explanation: 'Простые типы данных: целые, вещественные, символьные, строковые, логические. Массивы и записи - структурированные типы.'
+                correct: [0, 1, 2, 3],
+                explanation: 'Циклы помогают повторять действия много раз, как повторяющееся движение в танце! 💃'
             },
             {
                 type: 'matching',
-                question: 'Соотнесите понятия с определениями:',
-                leftItems: ['Алгоритм', 'Переменная', 'Функция', 'Массив'],
+                question: 'Соедини понятия с их значениями:',
+                leftItems: ['Алгоритм', 'Переменная', 'Функция', 'Баг'],
                 rightItems: [
-                    'Именованная область памяти',
-                    'Упорядоченная совокупность элементов',
-                    'Последовательность действий',
-                    'Подпрограмма, возвращающая значение'
+                    'Именованная "коробочка" для хранения данных',
+                    'Пошаговая инструкция',
+                    'Ошибка в программе',
+                    'Полезная подпрограмма'
                 ],
                 correctPairs: {
-                    'Алгоритм': 'Последовательность действий',
-                    'Переменная': 'Именованная область памяти',
-                    'Функция': 'Подпрограмма, возвращающая значение',
-                    'Массив': 'Упорядоченная совокупность элементов'
+                    'Алгоритм': 'Пошаговая инструкция',
+                    'Переменная': 'Именованная "коробочка" для хранения данных',
+                    'Функция': 'Полезная подпрограмма',
+                    'Баг': 'Ошибка в программе'
                 },
-                explanation: 'Важно понимать основные понятия программирования для написания корректных алгоритмов.'
+                explanation: 'Отличная работа! Теперь ты знаешь основные понятия программирования! 🎯'
             },
             {
-                type: 'single',
-                question: 'Что такое цикл с предусловием?',
-                options: [
-                    'Цикл, где условие проверяется после выполнения тела',
-                    'Цикл, где условие проверяется перед выполнением тела',
-                    'Цикл с фиксированным числом повторений',
-                    'Бесконечный цикл'
+                type: 'sequence',
+                question: 'Расставь шаги алгоритма "Как нарисовать кота" в правильном порядке:',
+                steps: [
+                    'Нарисовать круг для головы',
+                    'Добавить треугольные ушки',
+                    'Нарисовать глаза и нос',
+                    'Добавить усы и улыбку',
+                    'Нарисовать тело и лапки'
                 ],
-                correct: 1,
-                explanation: 'В цикле с предусловием (while) условие проверяется перед каждой итерацией.'
+                correctOrder: [0, 1, 2, 4, 3],
+                explanation: 'Правильно! Так мы рисуем котика шаг за шагом! 🐱'
+            },
+            {
+                type: 'fill-blanks',
+                question: 'Заполни пропуски в программе:',
+                code: 'Для i от 1 до 10:<br>    <span class="blank" data-id="1">______</span>("Привет, мир!")<br><br>Если температура > 30:<br>    <span class="blank" data-id="2">______</span>("Жарко!")<br>Иначе:<br>    <span class="blank" data-id="3">______</span>("Прохладно")',
+                blanks: {
+                    '1': ['напечатать', 'вывести', 'print'],
+                    '2': ['сказать', 'сообщить', 'вывести'],
+                    '3': ['написать', 'показать', 'вывести']
+                },
+                correct: ['вывести', 'сообщить', 'вывести'],
+                explanation: 'Молодец! Теперь программа будет работать правильно! 👏'
+            },
+            {
+                type: 'find-error',
+                question: 'Найди ошибку в программе:',
+                code: [
+                    '1. Начать программу',
+                    '2. Спросить имя пользователя',
+                    '3. Если имя = "Анна"',
+                    '4.     Напечатать "Привет, Анна!"',
+                    '5. Иначе если имя = "Иван"',
+                    '6.     Напечатать "Привет, Иван!"',
+                    '7. Иначе',
+                    '8.     Напечатать "Привет"',
+                    '9. Конец если',
+                    '10. Конец программы'
+                ],
+                errorLine: 7,
+                explanation: 'Правильно! После "Иначе" не нужно ставить условие. Ты нашел баг! 🐛'
+            },
+            {
+                type: 'build-program',
+                question: 'Собери программу для робота, чтобы он поздоровался:',
+                blocks: [
+                    'НАЧАТЬ',
+                    'ПОВТОРИ 3 РАЗА',
+                    'СКАЗАТЬ "ПРИВЕТ"',
+                    'ЖДАТЬ 1 СЕКУНДУ',
+                    'ПОВЕРНУТЬСЯ',
+                    'КОНЕЦ ПОВТОРЕНИЯ',
+                    'СКАЗАТЬ "ПОКА"',
+                    'КОНЕЦ'
+                ],
+                correctOrder: [0, 1, 2, 3, 4, 5, 6, 7],
+                explanation: 'Супер! Робот будет повторять приветствие 3 раза, поворачиваясь каждый раз! 🤖'
             }
         ];
         
@@ -394,7 +937,8 @@
         let score = 0;
         let correctAnswers = 0;
         let selectedAnswers = [];
-        let matchedPairs = {};
+        let dragItems = [];
+        let activeBlank = null;
         
         // DOM элементы
         const elements = {
@@ -407,13 +951,19 @@
             explanationText: document.getElementById('explanationText'),
             hintBtn: document.getElementById('hintBtn'),
             checkBtn: document.getElementById('checkBtn'),
-            nextBtn: document.getElementById('nextBtn')
+            nextBtn: document.getElementById('nextBtn'),
+            hintBubble: document.getElementById('hintBubble')
         };
         
         // Инициализация игры
         function initGame() {
             loadQuestion(currentQuestion);
             setupEventListeners();
+            
+            // Анимация появления
+            document.querySelectorAll('.fade-in').forEach(el => {
+                el.style.animationDelay = '0.2s';
+            });
         }
         
         // Загрузка вопроса
@@ -430,11 +980,11 @@
             elements.explanation.classList.remove('show');
             elements.nextBtn.style.display = 'none';
             
-            // Сбрасываем выбранные ответы
+            // Сброс выбранных ответов
             selectedAnswers = [];
-            matchedPairs = {};
+            activeBlank = null;
             
-            // Загружаем тип вопроса
+            // Загрузка типа вопроса
             switch (question.type) {
                 case 'single':
                     loadSingleChoice(question);
@@ -443,35 +993,44 @@
                     loadMultipleChoice(question);
                     break;
                 case 'matching':
-                    loadMatching(question);
+                    loadMatchingMobile(question);
+                    break;
+                case 'sequence':
+                    loadSequence(question);
+                    break;
+                case 'fill-blanks':
+                    loadFillBlanks(question);
+                    break;
+                case 'find-error':
+                    loadFindError(question);
+                    break;
+                case 'build-program':
+                    loadBuildProgram(question);
                     break;
             }
         }
         
-        // Загрузка одиночного выбора
+        // Одиночный выбор
         function loadSingleChoice(question) {
             const container = document.createElement('div');
-            container.className = 'single-choice';
+            container.className = 'options-container';
             
             question.options.forEach((option, index) => {
-                const optionElement = document.createElement('div');
-                optionElement.className = 'option';
+                const optionElement = document.createElement('button');
+                optionElement.className = 'option-btn';
                 optionElement.innerHTML = `
-                    <div class="checkbox"></div>
+                    <span class="option-number">${index + 1}</span>
                     <span>${option}</span>
                 `;
                 
-                optionElement.dataset.index = index;
                 optionElement.addEventListener('click', () => {
                     // Снимаем выделение с других
-                    document.querySelectorAll('.option').forEach(el => {
+                    document.querySelectorAll('.option-btn').forEach(el => {
                         el.classList.remove('selected');
-                        el.querySelector('.checkbox').classList.remove('checked');
                     });
                     
                     // Выделяем выбранный
                     optionElement.classList.add('selected');
-                    optionElement.querySelector('.checkbox').classList.add('checked');
                     selectedAnswers = [index];
                 });
                 
@@ -481,20 +1040,19 @@
             elements.answerContainer.appendChild(container);
         }
         
-        // Загрузка множественного выбора
+        // Множественный выбор
         function loadMultipleChoice(question) {
             const container = document.createElement('div');
-            container.className = 'multiple-choice';
+            container.className = 'options-container';
             
             question.options.forEach((option, index) => {
-                const optionElement = document.createElement('div');
-                optionElement.className = 'option';
+                const optionElement = document.createElement('button');
+                optionElement.className = 'option-btn';
                 optionElement.innerHTML = `
                     <div class="checkbox"></div>
                     <span>${option}</span>
                 `;
                 
-                optionElement.dataset.index = index;
                 optionElement.addEventListener('click', () => {
                     optionElement.classList.toggle('selected');
                     optionElement.querySelector('.checkbox').classList.toggle('checked');
@@ -512,70 +1070,278 @@
             elements.answerContainer.appendChild(container);
         }
         
-        // Загрузка соотнесения
-        function loadMatching(question) {
+        // Соотнесение (мобильная версия)
+        function loadMatchingMobile(question) {
             const container = document.createElement('div');
-            container.className = 'matching-container';
+            container.className = 'matching-mobile';
             
-            // Левый столбец - понятия
-            const leftColumn = document.createElement('div');
-            leftColumn.className = 'matching-column';
-            leftColumn.innerHTML = '<h3>Понятия</h3>';
-            
-            question.leftItems.forEach(item => {
-                const dragItem = document.createElement('div');
-                dragItem.className = 'matching-item';
-                dragItem.textContent = item;
-                dragItem.draggable = true;
-                dragItem.dataset.item = item;
+            question.leftItems.forEach((term, index) => {
+                const pairDiv = document.createElement('div');
+                pairDiv.className = 'matching-pair';
                 
-                dragItem.addEventListener('dragstart', handleDragStart);
-                leftColumn.appendChild(dragItem);
+                const termDiv = document.createElement('div');
+                termDiv.className = 'matching-term';
+                termDiv.textContent = term;
+                termDiv.dataset.term = term;
+                
+                const arrow = document.createElement('div');
+                arrow.className = 'matching-arrow';
+                arrow.innerHTML = '→';
+                
+                const dropdown = document.createElement('select');
+                dropdown.className = 'matching-dropdown';
+                dropdown.innerHTML = `<option value="">Выбери ответ</option>`;
+                
+                question.rightItems.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item;
+                    option.textContent = item;
+                    dropdown.appendChild(option);
+                });
+                
+                dropdown.addEventListener('change', function() {
+                    if (this.value) {
+                        this.classList.add('selected');
+                    } else {
+                        this.classList.remove('selected');
+                    }
+                });
+                
+                pairDiv.appendChild(termDiv);
+                pairDiv.appendChild(arrow);
+                pairDiv.appendChild(dropdown);
+                container.appendChild(pairDiv);
             });
             
-            // Правый столбец - определения
-            const rightColumn = document.createElement('div');
-            rightColumn.className = 'matching-column';
-            rightColumn.innerHTML = '<h3>Определения</h3>';
-            
-            question.rightItems.forEach(item => {
-                const dropZone = document.createElement('div');
-                dropZone.className = 'drop-zone';
-                dropZone.textContent = item;
-                dropZone.dataset.definition = item;
-                
-                dropZone.addEventListener('dragover', handleDragOver);
-                dropZone.addEventListener('drop', handleDrop);
-                rightColumn.appendChild(dropZone);
-            });
-            
-            container.appendChild(leftColumn);
-            container.appendChild(rightColumn);
             elements.answerContainer.appendChild(container);
         }
         
-        // Drag and Drop обработчики
-        function handleDragStart(e) {
-            e.dataTransfer.setData('text/plain', e.target.dataset.item);
-            e.target.classList.add('dragging');
+        // Последовательность
+        function loadSequence(question) {
+            const container = document.createElement('div');
+            container.className = 'sequence-container';
+            
+            // Перемешиваем шаги
+            const shuffledSteps = [...question.steps]
+                .map((step, index) => ({step, index}))
+                .sort(() => Math.random() - 0.5);
+            
+            shuffledSteps.forEach((item, position) => {
+                const stepElement = document.createElement('div');
+                stepElement.className = 'sequence-item';
+                stepElement.dataset.index = item.index;
+                stepElement.innerHTML = `
+                    <div class="sequence-number">${position + 1}</div>
+                    <div class="sequence-text">${item.step}</div>
+                    <div class="sequence-handle">☰</div>
+                `;
+                
+                // Добавляем touch/mouse события для перетаскивания
+                makeDraggable(stepElement, container);
+                container.appendChild(stepElement);
+            });
+            
+            elements.answerContainer.appendChild(container);
         }
         
-        function handleDragOver(e) {
-            e.preventDefault();
-            e.target.classList.add('over');
+        // Заполнение пропусков
+        function loadFillBlanks(question) {
+            const container = document.createElement('div');
+            container.className = 'fill-blanks';
+            
+            // Показываем текст с пропусками
+            const textDiv = document.createElement('div');
+            textDiv.className = 'blank-text';
+            textDiv.innerHTML = question.code;
+            
+            // Делаем пропуски кликабельными
+            setTimeout(() => {
+                textDiv.querySelectorAll('.blank').forEach(blank => {
+                    blank.addEventListener('click', function() {
+                        // Снимаем выделение с других пропусков
+                        textDiv.querySelectorAll('.blank').forEach(b => {
+                            b.classList.remove('active');
+                        });
+                        
+                        // Выделяем текущий
+                        this.classList.add('active');
+                        activeBlank = this;
+                        
+                        // Показываем подсказку
+                        showHint('Выбери вариант из списка ниже, чтобы заполнить пропуск!');
+                    });
+                });
+            }, 100);
+            
+            // Создаем варианты для заполнения
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'blank-options';
+            
+            // Собираем все уникальные варианты
+            const allOptions = [];
+            Object.values(question.blanks).forEach(arr => {
+                arr.forEach(opt => {
+                    if (!allOptions.includes(opt)) allOptions.push(opt);
+                });
+            });
+            
+            // Создаем кнопки вариантов
+            allOptions.forEach(option => {
+                const optionBtn = document.createElement('button');
+                optionBtn.className = 'blank-option';
+                optionBtn.textContent = option;
+                
+                optionBtn.addEventListener('click', function() {
+                    if (activeBlank) {
+                        activeBlank.textContent = option;
+                        activeBlank.classList.add('filled');
+                        activeBlank.classList.remove('active');
+                        this.classList.add('used');
+                        activeBlank = null;
+                    }
+                });
+                
+                optionsDiv.appendChild(optionBtn);
+            });
+            
+            container.appendChild(textDiv);
+            container.appendChild(optionsDiv);
+            elements.answerContainer.appendChild(container);
         }
         
-        function handleDrop(e) {
-            e.preventDefault();
-            e.target.classList.remove('over');
+        // Найди ошибку
+        function loadFindError(question) {
+            const container = document.createElement('div');
+            container.className = 'find-error';
             
-            const item = e.dataTransfer.getData('text/plain');
-            const definition = e.target.dataset.definition;
+            question.code.forEach((line, index) => {
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'code-line';
+                lineDiv.innerHTML = `
+                    <span class="line-number">${index + 1}.</span>
+                    <span class="line-text">${line}</span>
+                `;
+                
+                lineDiv.addEventListener('click', function() {
+                    // Снимаем выделение с других строк
+                    container.querySelectorAll('.code-line').forEach(l => {
+                        l.classList.remove('selected');
+                    });
+                    
+                    // Выделяем текущую строку
+                    this.classList.add('selected');
+                    selectedAnswers = [index + 1];
+                });
+                
+                container.appendChild(lineDiv);
+            });
             
-            if (item && definition) {
-                e.target.textContent = `${item} → ${definition}`;
-                e.target.classList.add('filled');
-                matchedPairs[item] = definition;
+            elements.answerContainer.appendChild(container);
+        }
+        
+        // Собери программу
+        function loadBuildProgram(question) {
+            const container = document.createElement('div');
+            
+            // Область с блоками
+            const blocksDiv = document.createElement('div');
+            blocksDiv.className = 'build-program';
+            
+            question.blocks.forEach((block, index) => {
+                const blockElement = document.createElement('div');
+                blockElement.className = 'code-block';
+                blockElement.textContent = block;
+                blockElement.dataset.index = index;
+                
+                // Делаем блок перетаскиваемым
+                makeDraggable(blockElement, blocksDiv);
+                blocksDiv.appendChild(blockElement);
+            });
+            
+            // Область для сборки программы
+            const programArea = document.createElement('div');
+            programArea.className = 'program-area';
+            programArea.id = 'programArea';
+            
+            container.appendChild(blocksDiv);
+            container.appendChild(programArea);
+            elements.answerContainer.appendChild(container);
+        }
+        
+        // Функция для создания перетаскиваемых элементов
+        function makeDraggable(element, container) {
+            let isDragging = false;
+            let startX, startY;
+            let initialIndex;
+            
+            element.addEventListener('touchstart', startDrag, {passive: false});
+            element.addEventListener('mousedown', startDrag);
+            
+            function startDrag(e) {
+                isDragging = true;
+                element.classList.add('dragging');
+                
+                const rect = element.getBoundingClientRect();
+                startX = (e.clientX || e.touches[0].clientX) - rect.left;
+                startY = (e.clientY || e.touches[0].clientY) - rect.top;
+                initialIndex = Array.from(container.children).indexOf(element);
+                
+                document.addEventListener('touchmove', drag, {passive: false});
+                document.addEventListener('touchend', stopDrag);
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', stopDrag);
+                
+                e.preventDefault();
+            }
+            
+            function drag(e) {
+                if (!isDragging) return;
+                
+                const x = (e.clientX || e.touches[0].clientX) - startX;
+                const y = (e.clientY || e.touches[0].clientY) - startY;
+                
+                element.style.position = 'fixed';
+                element.style.left = x + 'px';
+                element.style.top = y + 'px';
+                element.style.zIndex = '1000';
+                element.style.width = element.offsetWidth + 'px';
+                
+                e.preventDefault();
+            }
+            
+            function stopDrag(e) {
+                if (!isDragging) return;
+                
+                isDragging = false;
+                element.classList.remove('dragging');
+                element.style.position = '';
+                element.style.left = '';
+                element.style.top = '';
+                element.style.zIndex = '';
+                element.style.width = '';
+                
+                // Определяем, куда был перемещен элемент
+                const dropX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX);
+                const dropY = e.clientY || (e.changedTouches && e.changedTouches[0].clientY);
+                
+                if (dropX && dropY) {
+                    const programArea = document.getElementById('programArea');
+                    const programRect = programArea?.getBoundingClientRect();
+                    
+                    if (programRect && 
+                        dropX >= programRect.left && 
+                        dropX <= programRect.right &&
+                        dropY >= programRect.top && 
+                        dropY <= programRect.bottom) {
+                        // Перемещаем в область программы
+                        programArea.appendChild(element);
+                    }
+                }
+                
+                document.removeEventListener('touchmove', drag);
+                document.removeEventListener('touchend', stopDrag);
+                document.removeEventListener('mousemove', drag);
+                document.removeEventListener('mouseup', stopDrag);
             }
         }
         
@@ -599,8 +1365,50 @@
                     break;
                     
                 case 'matching':
-                    isCorrect = JSON.stringify(matchedPairs) === 
-                               JSON.stringify(question.correctPairs);
+                    const dropdowns = document.querySelectorAll('.matching-dropdown');
+                    let allCorrect = true;
+                    
+                    dropdowns.forEach(dropdown => {
+                        const term = dropdown.previousElementSibling.previousElementSibling.textContent;
+                        const selectedValue = dropdown.value;
+                        
+                        if (question.correctPairs[term] !== selectedValue) {
+                            allCorrect = false;
+                        }
+                    });
+                    
+                    isCorrect = allCorrect;
+                    break;
+                    
+                case 'sequence':
+                    const sequenceItems = document.querySelectorAll('.sequence-item');
+                    const currentOrder = Array.from(sequenceItems).map(item => 
+                        parseInt(item.dataset.index)
+                    );
+                    isCorrect = JSON.stringify(currentOrder) === 
+                               JSON.stringify(question.correctOrder);
+                    break;
+                    
+                case 'fill-blanks':
+                    const blanks = document.querySelectorAll('.blank');
+                    const filledCorrectly = Array.from(blanks).every((blank, index) => {
+                        return blank.textContent === question.correct[index];
+                    });
+                    isCorrect = filledCorrectly && blanks.length === question.correct.length;
+                    break;
+                    
+                case 'find-error':
+                    isCorrect = selectedAnswers.length === 1 && 
+                               selectedAnswers[0] === question.errorLine;
+                    break;
+                    
+                case 'build-program':
+                    const programBlocks = document.querySelectorAll('#programArea .code-block');
+                    const programOrder = Array.from(programBlocks).map(block => 
+                        parseInt(block.dataset.index)
+                    );
+                    isCorrect = JSON.stringify(programOrder) === 
+                               JSON.stringify(question.correctOrder);
                     break;
             }
             
@@ -613,6 +1421,9 @@
                 correctAnswers++;
                 elements.score.textContent = score;
                 elements.correct.textContent = correctAnswers;
+                
+                // Анимация успеха
+                document.querySelector('.question-block').classList.add('correct');
             }
             
             elements.nextBtn.style.display = 'block';
@@ -624,12 +1435,10 @@
             elements.explanation.classList.add('show');
             
             // Подсвечиваем правильные/неправильные ответы
-            if (questions[currentQuestion].type === 'single' || 
-                questions[currentQuestion].type === 'multiple') {
-                
-                document.querySelectorAll('.option').forEach((option, index) => {
-                    const question = questions[currentQuestion];
-                    
+            const question = questions[currentQuestion];
+            
+            if (question.type === 'single' || question.type === 'multiple') {
+                document.querySelectorAll('.option-btn').forEach((option, index) => {
                     if (question.type === 'single') {
                         if (index === question.correct) {
                             option.classList.add('correct');
@@ -639,7 +1448,7 @@
                     } else if (question.type === 'multiple') {
                         if (question.correct.includes(index)) {
                             option.classList.add('correct');
-                        } else if (selectedAnswers.includes(index)) {
+                        } else if (selectedAnswers.includes(index) && !question.correct.includes(index)) {
                             option.classList.add('incorrect');
                         }
                     }
@@ -647,68 +1456,147 @@
             }
         }
         
+        // Показать подсказку
+        function showHint(text) {
+            elements.hintBubble.textContent = text;
+            elements.hintBubble.classList.add('show');
+            
+            setTimeout(() => {
+                elements.hintBubble.classList.remove('show');
+            }, 3000);
+        }
+        
         // Показать результаты
         function showResults() {
             const percentage = Math.round((correctAnswers / questions.length) * 100);
+            const totalScore = score;
             
             let grade = '';
-            if (percentage >= 90) grade = 'Отлично! 🏆';
-            else if (percentage >= 70) grade = 'Хорошо! 👍';
-            else if (percentage >= 50) grade = 'Удовлетворительно 👌';
-            else grade = 'Нужно подтянуть знания 📚';
+            let icon = '';
+            let message = '';
+            
+            if (percentage >= 90) {
+                grade = 'Отлично!';
+                icon = '🏆';
+                message = 'Ты - суперпрограммист!';
+            } else if (percentage >= 70) {
+                grade = 'Хорошо!';
+                icon = '👍';
+                message = 'Отличная работа!';
+            } else if (percentage >= 50) {
+                grade = 'Неплохо!';
+                icon = '👌';
+                message = 'Ты на верном пути!';
+            } else {
+                grade = 'Попробуй еще!';
+                icon = '📚';
+                message = 'Повтори теорию и возвращайся!';
+            }
             
             elements.questionText.innerHTML = `
-                <h2>🏆 Тест завершен!</h2>
+                <h2>${icon} Тест завершен!</h2>
                 <p>Правильных ответов: ${correctAnswers}/${questions.length}</p>
-                <p>Набрано баллов: ${score}</p>
+                <p>Набрано баллов: ${totalScore}</p>
                 <p>Оценка: ${grade}</p>
+                <p>${message}</p>
             `;
+            
+            // Прогресс бар
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress-bar';
+            const progressFill = document.createElement('div');
+            progressFill.className = 'progress-fill';
+            progressFill.style.width = `${percentage}%`;
+            progressBar.appendChild(progressFill);
             
             elements.answerContainer.innerHTML = `
                 <div class="result-screen">
-                    <div class="result-icon">🎯</div>
+                    <div class="result-icon">${icon}</div>
                     <h3>Рекомендации:</h3>
-                    <p>1. Повторите теорию алгоритмизации</p>
-                    <p>2. Практикуйтесь в написании простых алгоритмов</p>
-                    <p>3. Решайте задачи на программирование</p>
+                    <p>🎯 Повтори основы алгоритмизации</p>
+                    <p>💻 Практикуйся в написании простых алгоритмов</p>
+                    <p>🎮 Играй в развивающие игры по программированию</p>
+                    <p>📚 Читай книги о программировании для детей</p>
                 </div>
             `;
+            
+            elements.answerContainer.querySelector('.result-screen').prepend(progressBar);
             
             elements.explanation.style.display = 'none';
             elements.hintBtn.style.display = 'none';
             elements.checkBtn.style.display = 'none';
             elements.nextBtn.style.display = 'none';
             
+            // Кнопка для перезапуска
+            const restartBtn = document.createElement('button');
+            restartBtn.className = 'btn btn-success';
+            restartBtn.innerHTML = '<i class="fas fa-redo"></i> Играть еще раз';
+            restartBtn.style.marginTop = '30px';
+            restartBtn.addEventListener('click', () => {
+                location.reload();
+            });
+            
+            elements.answerContainer.appendChild(restartBtn);
+            
             // Отправляем результаты в Telegram
             setTimeout(() => {
                 tg.sendData(JSON.stringify({
                     action: 'game_complete',
-                    score: score,
+                    score: totalScore,
                     correct: correctAnswers,
                     total: questions.length,
-                    percentage: percentage
+                    percentage: percentage,
+                    grade: grade
                 }));
-                
-                tg.close();
-            }, 3000);
+            }, 1000);
         }
         
         // Настройка обработчиков событий
         function setupEventListeners() {
+            // Подсказка
             elements.hintBtn.addEventListener('click', () => {
-                alert('💡 Подсказка: Внимательно читайте вопрос и все варианты ответов!');
+                const hints = [
+                    "Внимательно читай вопрос! 📖",
+                    "Подумай логически! 🤔",
+                    "Не торопись, у тебя есть время! ⏳",
+                    "Проверь свой ответ перед отправкой! ✅",
+                    "Если не уверен - используй метод исключения! 🎯"
+                ];
+                const randomHint = hints[Math.floor(Math.random() * hints.length)];
+                showHint(randomHint);
             });
             
+            // Проверка ответа
             elements.checkBtn.addEventListener('click', checkAnswer);
             
+            // Следующий вопрос
             elements.nextBtn.addEventListener('click', () => {
                 currentQuestion++;
                 loadQuestion(currentQuestion);
+            });
+            
+            // Обработка клавиатуры
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && elements.checkBtn.style.display !== 'none') {
+                    checkAnswer();
+                } else if (e.key === ' ' && elements.hintBtn.style.display !== 'none') {
+                    elements.hintBtn.click();
+                }
             });
         }
         
         // Запуск игры при загрузке
         document.addEventListener('DOMContentLoaded', initGame);
+        
+        // Предотвращение масштабирования при двойном тапе на мобильных
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
     </script>
 </body>
 </html>
