@@ -21,15 +21,15 @@
             color: #333;
             overflow-x: hidden;
             touch-action: manipulation;
-            padding-bottom: 100px;
         }
         
         .game-container {
             max-width: 100%;
-            min-height: calc(100vh - 120px);
+            min-height: 100vh;
             margin: 0 auto;
             background: white;
             padding: 20px;
+            padding-bottom: 100px; /* Отступ для кнопок */
             position: relative;
         }
         
@@ -40,7 +40,7 @@
                 border-radius: 20px;
                 margin: 20px auto;
                 padding: 30px;
-                padding-bottom: 40px;
+                padding-bottom: 100px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             }
         }
@@ -60,11 +60,6 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-        }
-        
-        .header .subtitle {
-            color: #666;
-            font-size: 0.9rem;
         }
         
         .stats {
@@ -89,22 +84,18 @@
             display: block;
         }
         
-        .stat-item .label {
-            font-size: 0.8rem;
-            opacity: 0.9;
-        }
-        
         .question-block {
             background: #f8f9fa;
             padding: 20px;
             border-radius: 15px;
             margin-bottom: 20px;
             border: 2px solid #e0e0e0;
+            min-height: 250px;
         }
         
         .question-text {
             font-size: 1.2rem;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             line-height: 1.4;
             color: #2c3e50;
             font-weight: 600;
@@ -113,14 +104,14 @@
         .options-container {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
         
         .option-btn {
             background: white;
             border: 2px solid #ddd;
             border-radius: 12px;
-            padding: 15px;
+            padding: 16px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
@@ -129,13 +120,10 @@
             font-size: 1rem;
             text-align: left;
             width: 100%;
-            min-height: 60px;
         }
         
-        .option-btn:hover, .option-btn:active {
-            border-color: #4a6ee0;
-            background: #f0f4ff;
-            transform: translateY(-2px);
+        .option-btn:active {
+            transform: scale(0.98);
         }
         
         .option-btn.selected {
@@ -156,11 +144,6 @@
             flex-shrink: 0;
         }
         
-        .option-btn.selected .option-number {
-            background: #2ecc71;
-        }
-        
-        /* Для множественного выбора */
         .checkbox {
             width: 24px;
             height: 24px;
@@ -170,17 +153,11 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            background: white;
-        }
-        
-        .checkbox.checked {
-            background: #4a6ee0;
-            border-color: #4a6ee0;
         }
         
         .checkbox.checked::after {
             content: '✓';
-            color: white;
+            color: #4a6ee0;
             font-weight: bold;
         }
         
@@ -188,8 +165,8 @@
         .matching-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin: 15px 0;
+            gap: 15px;
+            margin: 20px 0;
         }
         
         .matching-row {
@@ -201,7 +178,7 @@
         
         .matching-term {
             flex: 1;
-            min-width: 120px;
+            min-width: 130px;
             background: #4a6ee0;
             color: white;
             padding: 12px;
@@ -212,7 +189,7 @@
         
         .matching-select {
             flex: 1;
-            min-width: 120px;
+            min-width: 130px;
             padding: 12px;
             border: 2px solid #4a6ee0;
             border-radius: 10px;
@@ -220,12 +197,12 @@
             background: white;
         }
         
-        /* Последовательность - упрощенная */
-        .sequence-simple {
+        /* Последовательность */
+        .sequence-container {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin: 15px 0;
+            margin: 20px 0;
         }
         
         .sequence-item {
@@ -266,7 +243,7 @@
             background: #f5f5f5;
             border-radius: 12px;
             padding: 20px;
-            margin: 15px 0;
+            margin: 20px 0;
             border: 2px dashed #4a6ee0;
             font-family: 'Courier New', monospace;
             font-size: 1rem;
@@ -295,16 +272,16 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: 15px;
+            margin-top: 20px;
         }
         
         .blank-option {
-            padding: 8px 16px;
+            padding: 10px 18px;
             background: white;
             border: 2px solid #4a6ee0;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
         
         .blank-option.used {
@@ -319,7 +296,7 @@
             color: #ecf0f1;
             padding: 15px;
             border-radius: 8px;
-            margin: 15px 0;
+            margin: 20px 0;
             overflow-x: auto;
             line-height: 1.5;
             font-size: 0.95rem;
@@ -343,7 +320,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 12px;
-            margin: 15px 0;
+            margin: 20px 0;
         }
         
         .program-block {
@@ -375,7 +352,7 @@
             align-items: flex-start;
         }
         
-        /* Кнопки управления */
+        /* Кнопки управления - ИСПРАВЛЕНО */
         .controls {
             position: fixed;
             bottom: 0;
@@ -385,35 +362,26 @@
             padding: 15px 20px;
             display: flex;
             gap: 12px;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
             z-index: 1000;
             border-top-left-radius: 16px;
             border-top-right-radius: 16px;
-            height: 85px;
-            align-items: center;
         }
         
         @media (min-width: 768px) {
             .controls {
-                position: sticky;
+                position: fixed;
                 bottom: 20px;
-                max-width: 800px;
-                margin: 20px auto 0;
-                border-radius: 12px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .controls {
-                flex-direction: column;
-                height: auto;
-                padding: 12px;
-                gap: 8px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90%;
+                max-width: 760px;
+                border-radius: 16px;
             }
         }
         
         .btn {
-            padding: 14px 20px;
+            padding: 16px 24px;
             border: none;
             border-radius: 12px;
             font-size: 1rem;
@@ -425,7 +393,6 @@
             justify-content: center;
             gap: 8px;
             flex: 1;
-            min-height: 54px;
         }
         
         .btn:active {
@@ -447,51 +414,67 @@
             color: white;
         }
         
-        /* Уведомление */
-        .notification {
+        /* Сообщение о результате */
+        .result-message {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #4a6ee0;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
             color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            padding: 25px 35px;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+            z-index: 2000;
             display: none;
-            z-index: 1001;
-            max-width: 300px;
-            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: popIn 0.3s ease-out;
         }
         
-        @keyframes slideIn {
+        @keyframes popIn {
             from {
-                transform: translateX(100%);
                 opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
             }
             to {
-                transform: translateX(0);
                 opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
             }
         }
         
-        .notification.show {
-            display: block;
+        .result-message.correct {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+        
+        .result-message.incorrect {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
         }
         
         /* Адаптивность */
         @media (max-width: 768px) {
             .game-container {
-                padding: 15px;
-                padding-bottom: 100px;
+                padding-bottom: 120px;
             }
             
-            .question-text {
-                font-size: 1.1rem;
+            .controls {
+                padding: 12px 15px;
             }
             
-            .option-btn {
-                padding: 12px;
-                min-height: 55px;
+            .btn {
+                padding: 14px 20px;
+                font-size: 0.95rem;
             }
             
             .matching-row {
@@ -504,17 +487,15 @@
             }
         }
         
-        @media (max-width: 360px) {
-            .header h1 {
-                font-size: 1.3rem;
+        @media (max-width: 480px) {
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px;
             }
             
-            .question-text {
-                font-size: 1rem;
-            }
-            
-            .program-blocks {
-                grid-template-columns: 1fr;
+            .btn {
+                width: 100%;
             }
         }
     </style>
@@ -541,7 +522,7 @@
             </div>
         </div>
         
-        <div class="question-block" id="questionBlock">
+        <div class="question-block fade-in" id="questionBlock">
             <div class="question-text" id="questionText">
                 Загрузка вопроса...
             </div>
@@ -560,11 +541,11 @@
             <i class="fas fa-check"></i> Проверить
         </button>
         <button class="btn btn-next" id="nextBtn" style="display: none;">
-            <i class="fas fa-arrow-right"></i> Далее
+            <i class="fas fa-arrow-right"></i> Следующий вопрос
         </button>
     </div>
     
-    <div class="notification" id="notification"></div>
+    <div class="result-message" id="resultMessage"></div>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -680,19 +661,17 @@
             hintBtn: document.getElementById('hintBtn'),
             checkBtn: document.getElementById('checkBtn'),
             nextBtn: document.getElementById('nextBtn'),
-            notification: document.getElementById('notification')
+            resultMessage: document.getElementById('resultMessage')
         };
         
-        function showNotification(message, isSuccess = true) {
-            elements.notification.textContent = message;
-            elements.notification.style.background = isSuccess 
-                ? 'linear-gradient(135deg, #2ecc71, #27ae60)' 
-                : 'linear-gradient(135deg, #e74c3c, #c0392b)';
-            elements.notification.classList.add('show');
+        function showResultMessage(message, isCorrect) {
+            elements.resultMessage.textContent = message;
+            elements.resultMessage.className = `result-message ${isCorrect ? 'correct' : 'incorrect'}`;
+            elements.resultMessage.style.display = 'block';
             
             setTimeout(() => {
-                elements.notification.classList.remove('show');
-            }, 2000);
+                elements.resultMessage.style.display = 'none';
+            }, 1500);
         }
         
         function initGame() {
@@ -710,6 +689,9 @@
             elements.questionNumber.textContent = index + 1;
             elements.questionText.textContent = question.question;
             elements.answerContainer.innerHTML = '';
+            
+            // Показываем кнопку "Проверить", скрываем "Следующий вопрос"
+            elements.checkBtn.style.display = 'flex';
             elements.nextBtn.style.display = 'none';
             
             selectedAnswers = [];
@@ -740,6 +722,7 @@
                     break;
             }
             
+            // Прокручиваем к началу
             window.scrollTo(0, 0);
         }
         
@@ -831,7 +814,7 @@
         
         function loadSequence(question) {
             const container = document.createElement('div');
-            container.className = 'sequence-simple';
+            container.className = 'sequence-container';
             
             const shuffledSteps = [...question.steps]
                 .map((step, index) => ({step, originalIndex: index}))
@@ -1082,21 +1065,26 @@
                 elements.score.textContent = score;
                 elements.correct.textContent = correctAnswers;
                 
-                showNotification('Правильно! +10 баллов', true);
-                elements.questionBlock.style.borderColor = '#2ecc71';
-                setTimeout(() => {
-                    elements.questionBlock.style.borderColor = '#e0e0e0';
-                }, 1000);
+                showResultMessage('Правильно! +10 баллов ✅', true);
             } else {
-                showNotification('Неправильно! Попробуй еще', false);
-                elements.questionBlock.style.borderColor = '#e74c3c';
-                setTimeout(() => {
-                    elements.questionBlock.style.borderColor = '#e0e0e0';
-                }, 1000);
+                showResultMessage('Неправильно ❌', false);
             }
             
-            elements.nextBtn.style.display = 'flex';
+            // Показываем кнопку "Следующий вопрос", скрываем "Проверить"
             elements.checkBtn.style.display = 'none';
+            elements.nextBtn.style.display = 'flex';
+            
+            // Автоматический переход через 3 секунды
+            setTimeout(() => {
+                if (elements.nextBtn.style.display === 'flex') {
+                    nextQuestion();
+                }
+            }, 3000);
+        }
+        
+        function nextQuestion() {
+            currentQuestion++;
+            loadQuestion(currentQuestion);
         }
         
         function showResults() {
@@ -1124,11 +1112,7 @@
                 <p>Правильных ответов: ${correctAnswers}/${questions.length}</p>
                 <p>Набрано баллов: ${score}</p>
                 <p><strong>${grade}</strong></p>
-            `;
-            
-            elements.answerContainer.innerHTML = `
-                <div style="text-align: center; padding: 20px 0;">
-                    <div style="font-size: 3rem; margin-bottom: 15px;">${icon}</div>
+                <p style="margin-top: 20px; font-size: 1rem;">
                     <button id="restartBtn" style="
                         background: linear-gradient(135deg, #4a6ee0, #3a5ed0);
                         color: white;
@@ -1142,16 +1126,17 @@
                     ">
                         <i class="fas fa-redo"></i> Играть снова
                     </button>
-                </div>
+                </p>
             `;
+            
+            elements.answerContainer.innerHTML = '';
+            elements.hintBtn.style.display = 'none';
+            elements.checkBtn.style.display = 'none';
+            elements.nextBtn.style.display = 'none';
             
             document.getElementById('restartBtn').addEventListener('click', () => {
                 location.reload();
             });
-            
-            elements.hintBtn.style.display = 'none';
-            elements.checkBtn.style.display = 'none';
-            elements.nextBtn.style.display = 'none';
             
             tg.sendData(JSON.stringify({
                 action: 'game_complete',
@@ -1170,16 +1155,11 @@
                     "Помни про порядок действий в программировании!",
                     "Проверь свой ответ перед отправкой!"
                 ];
-                alert(hints[Math.floor(Math.random() * hints.length)]);
+                showResultMessage(hints[Math.floor(Math.random() * hints.length)], true);
             });
             
             elements.checkBtn.addEventListener('click', checkAnswer);
-            
-            elements.nextBtn.addEventListener('click', () => {
-                currentQuestion++;
-                elements.checkBtn.style.display = 'flex';
-                loadQuestion(currentQuestion);
-            });
+            elements.nextBtn.addEventListener('click', nextQuestion);
             
             // Предотвращаем масштабирование
             document.addEventListener('touchstart', function(e) {
