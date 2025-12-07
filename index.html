@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Основы алгоритмизации и программирования</title>
+    <title>Программирование для детей</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -17,219 +17,143 @@
         body {
             background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             min-height: 100vh;
-            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #333;
             overflow-x: hidden;
             touch-action: manipulation;
+            padding-bottom: 100px;
         }
         
-        /* Улучшенный контейнер для мобильных */
         .game-container {
             max-width: 100%;
-            min-height: 100vh;
+            min-height: calc(100vh - 120px);
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
+            background: white;
             padding: 20px;
             position: relative;
-            box-shadow: 0 0 30px rgba(0,0,0,0.1);
         }
         
         @media (min-width: 768px) {
             .game-container {
                 max-width: 800px;
                 min-height: auto;
-                border-radius: 25px;
+                border-radius: 20px;
                 margin: 20px auto;
                 padding: 30px;
+                padding-bottom: 40px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             }
         }
         
-        /* Хедер с анимацией */
         .header {
             text-align: center;
-            margin-bottom: 25px;
-            padding-bottom: 20px;
-            border-bottom: 3px dashed #4a6ee0;
-            position: relative;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
         }
         
         .header h1 {
             color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 1.8rem;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            margin-bottom: 8px;
+            font-size: 1.6rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: 1.5rem;
-                gap: 10px;
-            }
+            gap: 10px;
         }
         
         .header .subtitle {
-            color: #7f8c8d;
-            font-size: 1rem;
-            font-weight: 500;
+            color: #666;
+            font-size: 0.9rem;
         }
         
-        .header::after {
-            content: "🎮";
-            position: absolute;
-            right: 0;
-            top: 0;
-            font-size: 2rem;
-            animation: bounce 2s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        /* Статистика в виде карточек */
         .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .stat-card {
+            display: flex;
+            justify-content: space-between;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 15px 10px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
-        .stat-card:hover {
-            transform: translateY(-5px);
+        .stat-item {
+            text-align: center;
+            flex: 1;
         }
         
-        .stat-card .number {
-            font-size: 1.8rem;
+        .stat-item .number {
+            font-size: 1.5rem;
             font-weight: bold;
             display: block;
-            margin-bottom: 5px;
         }
         
-        .stat-card .label {
-            font-size: 0.9rem;
+        .stat-item .label {
+            font-size: 0.8rem;
             opacity: 0.9;
         }
         
-        /* Блок вопроса */
         .question-block {
             background: #f8f9fa;
-            padding: 25px;
-            border-radius: 20px;
-            margin-bottom: 25px;
-            border-left: 8px solid #3498db;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .question-block::before {
-            content: "❓";
-            position: absolute;
-            right: 15px;
-            top: 15px;
-            font-size: 2rem;
-            opacity: 0.1;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
         }
         
         .question-text {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             margin-bottom: 20px;
-            line-height: 1.5;
+            line-height: 1.4;
             color: #2c3e50;
             font-weight: 600;
         }
         
-        @media (max-width: 480px) {
-            .question-text {
-                font-size: 1.1rem;
-            }
-        }
-        
-        /* Типы вопросов - унифицированные */
         .options-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-top: 20px;
+            gap: 10px;
         }
         
-        /* Кнопки вариантов ответов для всех типов вопросов */
         .option-btn {
             background: white;
-            border: 3px solid #ddd;
-            border-radius: 15px;
-            padding: 18px 20px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 15px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 15px;
-            font-size: 1.1rem;
-            font-weight: 500;
+            gap: 12px;
+            font-size: 1rem;
             text-align: left;
-            position: relative;
-            overflow: hidden;
-            min-height: 70px;
+            width: 100%;
+            min-height: 60px;
         }
         
         .option-btn:hover, .option-btn:active {
-            border-color: #3498db;
-            background: #e3f2fd;
-            transform: translateY(-3px);
-            box-shadow: 0 7px 20px rgba(52, 152, 219, 0.2);
+            border-color: #4a6ee0;
+            background: #f0f4ff;
+            transform: translateY(-2px);
         }
         
         .option-btn.selected {
             border-color: #2ecc71;
-            background: #d4edda;
-            transform: scale(1.02);
-        }
-        
-        .option-btn.correct {
-            border-color: #27ae60;
-            background: #d4edda;
-            animation: pulse 0.5s;
-        }
-        
-        .option-btn.incorrect {
-            border-color: #e74c3c;
-            background: #fadbd8;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            background: #e8f8ef;
         }
         
         .option-number {
-            background: #3498db;
+            background: #4a6ee0;
             color: white;
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             flex-shrink: 0;
-            font-size: 1.2rem;
         }
         
         .option-btn.selected .option-number {
@@ -238,10 +162,10 @@
         
         /* Для множественного выбора */
         .checkbox {
-            width: 28px;
-            height: 28px;
-            border: 3px solid #3498db;
-            border-radius: 8px;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #4a6ee0;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -250,546 +174,374 @@
         }
         
         .checkbox.checked {
-            background: #3498db;
-            border-color: #3498db;
+            background: #4a6ee0;
+            border-color: #4a6ee0;
         }
         
         .checkbox.checked::after {
             content: '✓';
             color: white;
             font-weight: bold;
-            font-size: 1.2rem;
         }
         
-        /* Улучшенное соотнесение для мобильных (без перетаскивания) */
-        .matching-mobile {
-            display: grid;
-            gap: 15px;
-            margin: 20px 0;
+        /* Соотнесение */
+        .matching-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 15px 0;
         }
         
-        .matching-pair {
+        .matching-row {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
             flex-wrap: wrap;
         }
         
         .matching-term {
             flex: 1;
-            min-width: 150px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-width: 120px;
+            background: #4a6ee0;
             color: white;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 12px;
+            border-radius: 10px;
             text-align: center;
             font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         
-        .matching-arrow {
-            font-size: 1.5rem;
-            color: #3498db;
-        }
-        
-        .matching-dropdown {
+        .matching-select {
             flex: 1;
-            min-width: 150px;
-            padding: 15px;
-            border: 3px solid #3498db;
-            border-radius: 12px;
-            font-size: 1rem;
+            min-width: 120px;
+            padding: 12px;
+            border: 2px solid #4a6ee0;
+            border-radius: 10px;
+            font-size: 0.95rem;
             background: white;
-            cursor: pointer;
-            font-weight: 500;
-            text-align: center;
         }
         
-        .matching-dropdown.selected {
-            background: #e3f2fd;
-            border-color: #2ecc71;
-        }
-        
-        /* Новый тип: Последовательность */
-        .sequence-container {
+        /* Последовательность - упрощенная */
+        .sequence-simple {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin: 20px 0;
+            gap: 10px;
+            margin: 15px 0;
         }
         
         .sequence-item {
             background: white;
-            border: 3px solid #f39c12;
-            border-radius: 15px;
-            padding: 18px 20px;
+            border: 2px solid #f39c12;
+            border-radius: 12px;
+            padding: 15px;
             display: flex;
             align-items: center;
             gap: 15px;
-            cursor: move;
-            font-size: 1.1rem;
-            font-weight: 500;
-            position: relative;
-            transition: transform 0.3s;
-            min-height: 70px;
+            font-size: 1rem;
         }
         
-        .sequence-item.dragging {
-            opacity: 0.5;
-            transform: scale(1.05);
-        }
-        
-        .sequence-number {
-            background: #f39c12;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+        .seq-buttons {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            flex-shrink: 0;
-            font-size: 1.2rem;
-        }
-        
-        .sequence-handle {
+            gap: 8px;
             margin-left: auto;
-            color: #7f8c8d;
-            font-size: 1.5rem;
         }
         
-        /* Новый тип: Заполнение пропусков */
-        .fill-blanks {
-            background: #fef9e7;
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            border: 3px dashed #f1c40f;
+        .seq-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 50%;
+            background: #4a6ee0;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
         }
         
-        .blank-text {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            margin-bottom: 20px;
+        .seq-btn:disabled {
+            background: #ddd;
+            cursor: not-allowed;
+        }
+        
+        /* Заполнение пропусков */
+        .code-blanks {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 2px dashed #4a6ee0;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            line-height: 1.6;
         }
         
         .blank {
             display: inline-block;
-            min-width: 120px;
-            padding: 10px 15px;
-            margin: 0 5px;
-            border: 2px dashed #7f8c8d;
-            border-radius: 8px;
+            min-width: 80px;
+            padding: 6px 10px;
+            margin: 0 4px;
+            border: 2px dashed #999;
+            border-radius: 6px;
             background: white;
             cursor: pointer;
             text-align: center;
             font-weight: 500;
-            position: relative;
         }
         
         .blank.filled {
-            border: 2px solid #3498db;
-            background: #e3f2fd;
+            border: 2px solid #4a6ee0;
+            background: #f0f4ff;
         }
         
         .blank-options {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
+            gap: 8px;
+            margin-top: 15px;
         }
         
         .blank-option {
-            padding: 10px 20px;
+            padding: 8px 16px;
             background: white;
-            border: 2px solid #3498db;
-            border-radius: 25px;
+            border: 2px solid #4a6ee0;
+            border-radius: 20px;
             cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        
-        .blank-option:hover {
-            background: #3498db;
-            color: white;
+            font-size: 0.9rem;
         }
         
         .blank-option.used {
             opacity: 0.5;
             cursor: not-allowed;
-            text-decoration: line-through;
         }
         
-        /* Новый тип: Найди ошибку */
-        .find-error {
-            background: #fff5f5;
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            border: 3px solid #e74c3c;
+        /* Код */
+        .code-block {
             font-family: 'Courier New', monospace;
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            line-height: 1.5;
+            font-size: 0.95rem;
         }
         
         .code-line {
-            padding: 10px 15px;
-            margin: 5px 0;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            padding: 4px 8px;
+            margin: 2px 0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
             cursor: pointer;
-            transition: background 0.3s;
-            font-size: 1.1rem;
-        }
-        
-        .code-line:hover {
-            background: rgba(231, 76, 60, 0.1);
         }
         
         .code-line.selected {
             background: rgba(231, 76, 60, 0.2);
-            border-left: 4px solid #e74c3c;
+            border-left: 3px solid #e74c3c;
         }
         
-        .line-number {
-            color: #7f8c8d;
-            font-weight: bold;
-            min-width: 30px;
-        }
-        
-        /* Новый тип: Собери программу */
-        .build-program {
+        /* Сборка программы */
+        .program-blocks {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
         }
         
-        .code-block {
+        .program-block {
             background: white;
-            border: 3px solid #9b59b6;
-            border-radius: 15px;
-            padding: 20px;
-            cursor: move;
+            border: 2px solid #9b59b6;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
             text-align: center;
-            font-weight: 500;
-            transition: all 0.3s;
-            min-height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            transition: all 0.2s;
         }
         
-        .code-block:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(155, 89, 182, 0.2);
+        .program-block.selected {
+            border-color: #2ecc71;
+            background: #e8f8ef;
         }
         
         .program-area {
-            grid-column: 1 / -1;
-            min-height: 200px;
-            border: 3px dashed #9b59b6;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
+            min-height: 120px;
+            border: 2px dashed #9b59b6;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 10px;
             align-items: flex-start;
         }
         
-        .program-area .code-block {
-            margin: 5px;
-        }
-        
-        /* Объяснение */
-        .explanation {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-            border-left: 6px solid #3498db;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 15px;
-            display: none;
-            animation: slideIn 0.5s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .explanation.show {
-            display: block;
-        }
-        
-        .explanation h4 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        /* Управление */
+        /* Кнопки управления */
         .controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 30px;
-            position: sticky;
-            bottom: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 15px;
-            border-radius: 20px;
-            box-shadow: 0 -5px 30px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-            z-index: 100;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px 20px;
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            height: 85px;
+            align-items: center;
+        }
+        
+        @media (min-width: 768px) {
+            .controls {
+                position: sticky;
+                bottom: 20px;
+                max-width: 800px;
+                margin: 20px auto 0;
+                border-radius: 12px;
+            }
         }
         
         @media (max-width: 480px) {
             .controls {
-                grid-template-columns: 1fr;
-                position: fixed;
-                left: 20px;
-                right: 20px;
-                bottom: 10px;
+                flex-direction: column;
+                height: auto;
+                padding: 12px;
+                gap: 8px;
             }
         }
         
         .btn {
-            padding: 18px 25px;
+            padding: 14px 20px;
             border: none;
-            border-radius: 15px;
-            font-size: 1.1rem;
-            font-weight: bold;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            min-height: 60px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            gap: 8px;
+            flex: 1;
+            min-height: 54px;
         }
         
         .btn:active {
-            transform: scale(0.95);
+            transform: scale(0.98);
         }
         
-        .btn-primary {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+        .btn-check {
+            background: linear-gradient(135deg, #4a6ee0, #3a5ed0);
             color: white;
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
         
-        .btn-success {
+        .btn-next {
             background: linear-gradient(135deg, #2ecc71, #27ae60);
             color: white;
-            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
         }
         
-        .btn-warning {
-            background: linear-gradient(135deg, #f39c12, #d35400);
+        .btn-hint {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
             color: white;
-            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
         }
         
-        .btn-danger {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        /* Уведомление */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4a6ee0;
             color: white;
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
-        }
-        
-        /* Экран результатов */
-        .result-screen {
-            text-align: center;
-            padding: 30px 20px;
-            animation: fadeIn 1s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .result-icon {
-            font-size: 5rem;
-            margin-bottom: 20px;
-            animation: celebrate 2s infinite;
-        }
-        
-        @keyframes celebrate {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            25% { transform: scale(1.2) rotate(-10deg); }
-            50% { transform: scale(1.2) rotate(10deg); }
-            75% { transform: scale(1.2) rotate(-10deg); }
-        }
-        
-        .progress-bar {
-            height: 20px;
-            background: #ecf0f1;
+            padding: 15px 20px;
             border-radius: 10px;
-            margin: 30px 0;
-            overflow: hidden;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1001;
+            max-width: 300px;
+            animation: slideIn 0.3s ease-out;
         }
         
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #2ecc71, #27ae60);
-            border-radius: 10px;
-            transition: width 1s ease;
-            position: relative;
-            overflow: hidden;
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
         
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.4),
-                transparent
-            );
-            animation: shimmer 2s infinite;
+        .notification.show {
+            display: block;
         }
         
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        
-        /* Адаптивные улучшения */
+        /* Адаптивность */
         @media (max-width: 768px) {
             .game-container {
                 padding: 15px;
+                padding-bottom: 100px;
             }
             
-            .question-block {
-                padding: 20px;
+            .question-text {
+                font-size: 1.1rem;
             }
             
             .option-btn {
-                padding: 16px;
-                min-height: 60px;
-                font-size: 1rem;
-            }
-            
-            .btn {
-                padding: 16px;
-                font-size: 1rem;
+                padding: 12px;
                 min-height: 55px;
             }
             
-            .matching-pair {
+            .matching-row {
                 flex-direction: column;
-                gap: 10px;
+                align-items: stretch;
             }
             
-            .matching-term, .matching-dropdown {
+            .matching-term, .matching-select {
                 width: 100%;
-                min-width: auto;
-            }
-            
-            .matching-arrow {
-                transform: rotate(90deg);
             }
         }
         
-        /* Для очень маленьких экранов */
         @media (max-width: 360px) {
             .header h1 {
                 font-size: 1.3rem;
             }
             
-            .stat-card {
-                padding: 12px 8px;
-            }
-            
-            .stat-card .number {
-                font-size: 1.5rem;
-            }
-            
             .question-text {
                 font-size: 1rem;
             }
-        }
-        
-        /* Улучшенная анимация появления */
-        .fade-in {
-            animation: fadeInUp 0.6s ease-out;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
+            
+            .program-blocks {
+                grid-template-columns: 1fr;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Подсказки */
-        .hint-bubble {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #f39c12;
-            color: white;
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
-            display: none;
-            z-index: 1000;
-            max-width: 300px;
-            animation: slideInRight 0.5s ease-out;
-        }
-        
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        .hint-bubble.show {
-            display: block;
         }
     </style>
 </head>
 <body>
     <div class="game-container" id="gameContainer">
         <div class="header">
-            <h1><i class="fas fa-robot"></i> Программирование для детей</h1>
-            <p class="subtitle">Учимся кодить весело и интересно!</p>
+            <h1><i class="fas fa-code"></i> Учим программировать</h1>
+            <p class="subtitle">Игровые задания по алгоритмике</p>
         </div>
         
-        <div class="stats" id="stats">
-            <div class="stat-card">
+        <div class="stats">
+            <div class="stat-item">
                 <span class="number" id="questionNumber">1</span>
                 <span class="label">ВОПРОС</span>
             </div>
-            <div class="stat-card">
+            <div class="stat-item">
                 <span class="number" id="score">0</span>
                 <span class="label">БАЛЛЫ</span>
             </div>
-            <div class="stat-card">
+            <div class="stat-item">
                 <span class="number" id="correct">0</span>
                 <span class="label">ПРАВИЛЬНО</span>
             </div>
         </div>
         
-        <div class="question-block fade-in" id="questionBlock">
+        <div class="question-block" id="questionBlock">
             <div class="question-text" id="questionText">
                 Загрузка вопроса...
             </div>
@@ -797,37 +549,29 @@
             <div id="answerContainer">
                 <!-- Здесь будут варианты ответов -->
             </div>
-            
-            <div class="explanation" id="explanation">
-                <h4><i class="fas fa-lightbulb"></i> ОБЪЯСНЕНИЕ:</h4>
-                <p id="explanationText"></p>
-            </div>
-        </div>
-        
-        <div class="controls">
-            <button class="btn btn-warning" id="hintBtn">
-                <i class="fas fa-lightbulb"></i> Подсказка
-            </button>
-            <button class="btn btn-primary" id="checkBtn">
-                <i class="fas fa-check"></i> Проверить
-            </button>
-            <button class="btn btn-success" id="nextBtn" style="display: none;">
-                <i class="fas fa-arrow-right"></i> Далее
-            </button>
-        </div>
-        
-        <div class="hint-bubble" id="hintBubble">
-            Подсказка появится здесь!
         </div>
     </div>
+    
+    <div class="controls">
+        <button class="btn btn-hint" id="hintBtn">
+            <i class="fas fa-lightbulb"></i> Подсказка
+        </button>
+        <button class="btn btn-check" id="checkBtn">
+            <i class="fas fa-check"></i> Проверить
+        </button>
+        <button class="btn btn-next" id="nextBtn" style="display: none;">
+            <i class="fas fa-arrow-right"></i> Далее
+        </button>
+    </div>
+    
+    <div class="notification" id="notification"></div>
 
     <script>
-        // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
         tg.expand();
         tg.ready();
         
-        // Новые типы вопросов для детей
+        // Вопросы без объяснений
         const questions = [
             {
                 type: 'single',
@@ -835,138 +579,127 @@
                 options: [
                     'Последовательность команд для компьютера',
                     'Программа на языке программирования',
-                    'Точное предписание, определяющее процесс преобразования информации',
+                    'Точное предписание для решения задачи',
                     'Математическая формула'
                 ],
-                correct: 2,
-                explanation: 'Алгоритм - это пошаговая инструкция для решения задачи. Как рецепт приготовления торта! 🎂'
+                correct: 2
             },
             {
                 type: 'multiple',
-                question: 'Какие типы циклов ты знаешь? (Выбери все правильные)',
+                question: 'Какие типы циклов существуют в программировании?',
                 options: [
-                    'Цикл "пока" (while)',
-                    'Цикл "для" (for)',
-                    'Цикл "до тех пор" (do-while)',
-                    'Бесконечный цикл (осторожно!)'
+                    'Цикл while',
+                    'Цикл for',
+                    'Цикл do-while',
+                    'Бесконечный цикл'
                 ],
-                correct: [0, 1, 2, 3],
-                explanation: 'Циклы помогают повторять действия много раз, как повторяющееся движение в танце! 💃'
+                correct: [0, 1, 2, 3]
             },
             {
                 type: 'matching',
                 question: 'Соедини понятия с их значениями:',
-                leftItems: ['Алгоритм', 'Переменная', 'Функция', 'Баг'],
+                leftItems: ['Algorithm', 'Variable', 'Function', 'Bug'],
                 rightItems: [
-                    'Именованная "коробочка" для хранения данных',
-                    'Пошаговая инструкция',
-                    'Ошибка в программе',
-                    'Полезная подпрограмма'
+                    'Named container for data',
+                    'Step-by-step instruction',
+                    'Error in program',
+                    'Reusable code block'
                 ],
                 correctPairs: {
-                    'Алгоритм': 'Пошаговая инструкция',
-                    'Переменная': 'Именованная "коробочка" для хранения данных',
-                    'Функция': 'Полезная подпрограмма',
-                    'Баг': 'Ошибка в программе'
-                },
-                explanation: 'Отличная работа! Теперь ты знаешь основные понятия программирования! 🎯'
+                    'Algorithm': 'Step-by-step instruction',
+                    'Variable': 'Named container for data',
+                    'Function': 'Reusable code block',
+                    'Bug': 'Error in program'
+                }
             },
             {
                 type: 'sequence',
-                question: 'Расставь шаги алгоритма "Как нарисовать кота" в правильном порядке:',
+                question: 'Расставь строки кода в правильном порядке:',
                 steps: [
-                    'Нарисовать круг для головы',
-                    'Добавить треугольные ушки',
-                    'Нарисовать глаза и нос',
-                    'Добавить усы и улыбку',
-                    'Нарисовать тело и лапки'
+                    'print("Hello, World!")',
+                    '# My first program',
+                    'def main():',
+                    'if __name__ == "__main__":',
+                    '    main()'
                 ],
-                correctOrder: [0, 1, 2, 4, 3],
-                explanation: 'Правильно! Так мы рисуем котика шаг за шагом! 🐱'
+                correctOrder: [1, 2, 0, 3, 4]
             },
             {
                 type: 'fill-blanks',
                 question: 'Заполни пропуски в программе:',
-                code: 'Для i от 1 до 10:<br>    <span class="blank" data-id="1">______</span>("Привет, мир!")<br><br>Если температура > 30:<br>    <span class="blank" data-id="2">______</span>("Жарко!")<br>Иначе:<br>    <span class="blank" data-id="3">______</span>("Прохладно")',
+                code: 'for i in range(10):<br>    <span class="blank" data-id="1">______</span>("Hello!")<br><br>if x > 10:<br>    <span class="blank" data-id="2">______</span>("Big")<br>else:<br>    <span class="blank" data-id="3">______</span>("Small")',
                 blanks: {
-                    '1': ['напечатать', 'вывести', 'print'],
-                    '2': ['сказать', 'сообщить', 'вывести'],
-                    '3': ['написать', 'показать', 'вывести']
+                    '1': ['print', 'write', 'output'],
+                    '2': ['print', 'say', 'show'],
+                    '3': ['print', 'display', 'output']
                 },
-                correct: ['вывести', 'сообщить', 'вывести'],
-                explanation: 'Молодец! Теперь программа будет работать правильно! 👏'
+                correct: ['print', 'print', 'print']
             },
             {
                 type: 'find-error',
-                question: 'Найди ошибку в программе:',
+                question: 'Найди строку с ошибкой:',
                 code: [
-                    '1. Начать программу',
-                    '2. Спросить имя пользователя',
-                    '3. Если имя = "Анна"',
-                    '4.     Напечатать "Привет, Анна!"',
-                    '5. Иначе если имя = "Иван"',
-                    '6.     Напечатать "Привет, Иван!"',
-                    '7. Иначе',
-                    '8.     Напечатать "Привет"',
-                    '9. Конец если',
-                    '10. Конец программы'
+                    'def calculate(a, b):',
+                    '    result = a + b',
+                    '    return result',
+                    '',
+                    'x = 5',
+                    'y = "10"',
+                    'z = calculate(x, y)',
+                    'print(f"Result: {z}")'
                 ],
-                errorLine: 7,
-                explanation: 'Правильно! После "Иначе" не нужно ставить условие. Ты нашел баг! 🐛'
+                errorLine: 6
             },
             {
                 type: 'build-program',
-                question: 'Собери программу для робота, чтобы он поздоровался:',
+                question: 'Собери программу для приветствия:',
                 blocks: [
-                    'НАЧАТЬ',
-                    'ПОВТОРИ 3 РАЗА',
-                    'СКАЗАТЬ "ПРИВЕТ"',
-                    'ЖДАТЬ 1 СЕКУНДУ',
-                    'ПОВЕРНУТЬСЯ',
-                    'КОНЕЦ ПОВТОРЕНИЯ',
-                    'СКАЗАТЬ "ПОКА"',
-                    'КОНЕЦ'
+                    'def greet(name):',
+                    '    print(f"Hello, {name}!")',
+                    '',
+                    'greet("World")',
+                    'greet("Python")'
                 ],
-                correctOrder: [0, 1, 2, 3, 4, 5, 6, 7],
-                explanation: 'Супер! Робот будет повторять приветствие 3 раза, поворачиваясь каждый раз! 🤖'
+                correctOrder: [0, 1, 2, 3, 4]
             }
         ];
         
-        // Состояние игры
         let currentQuestion = 0;
         let score = 0;
         let correctAnswers = 0;
         let selectedAnswers = [];
-        let dragItems = [];
         let activeBlank = null;
+        let programBlocks = [];
         
-        // DOM элементы
         const elements = {
             questionNumber: document.getElementById('questionNumber'),
             score: document.getElementById('score'),
             correct: document.getElementById('correct'),
             questionText: document.getElementById('questionText'),
             answerContainer: document.getElementById('answerContainer'),
-            explanation: document.getElementById('explanation'),
-            explanationText: document.getElementById('explanationText'),
             hintBtn: document.getElementById('hintBtn'),
             checkBtn: document.getElementById('checkBtn'),
             nextBtn: document.getElementById('nextBtn'),
-            hintBubble: document.getElementById('hintBubble')
+            notification: document.getElementById('notification')
         };
         
-        // Инициализация игры
+        function showNotification(message, isSuccess = true) {
+            elements.notification.textContent = message;
+            elements.notification.style.background = isSuccess 
+                ? 'linear-gradient(135deg, #2ecc71, #27ae60)' 
+                : 'linear-gradient(135deg, #e74c3c, #c0392b)';
+            elements.notification.classList.add('show');
+            
+            setTimeout(() => {
+                elements.notification.classList.remove('show');
+            }, 2000);
+        }
+        
         function initGame() {
             loadQuestion(currentQuestion);
             setupEventListeners();
-            
-            // Анимация появления
-            document.querySelectorAll('.fade-in').forEach(el => {
-                el.style.animationDelay = '0.2s';
-            });
         }
         
-        // Загрузка вопроса
         function loadQuestion(index) {
             if (index >= questions.length) {
                 showResults();
@@ -977,14 +710,12 @@
             elements.questionNumber.textContent = index + 1;
             elements.questionText.textContent = question.question;
             elements.answerContainer.innerHTML = '';
-            elements.explanation.classList.remove('show');
             elements.nextBtn.style.display = 'none';
             
-            // Сброс выбранных ответов
             selectedAnswers = [];
             activeBlank = null;
+            programBlocks = [];
             
-            // Загрузка типа вопроса
             switch (question.type) {
                 case 'single':
                     loadSingleChoice(question);
@@ -993,7 +724,7 @@
                     loadMultipleChoice(question);
                     break;
                 case 'matching':
-                    loadMatchingMobile(question);
+                    loadMatching(question);
                     break;
                 case 'sequence':
                     loadSequence(question);
@@ -1008,9 +739,10 @@
                     loadBuildProgram(question);
                     break;
             }
+            
+            window.scrollTo(0, 0);
         }
         
-        // Одиночный выбор
         function loadSingleChoice(question) {
             const container = document.createElement('div');
             container.className = 'options-container';
@@ -1019,17 +751,14 @@
                 const optionElement = document.createElement('button');
                 optionElement.className = 'option-btn';
                 optionElement.innerHTML = `
-                    <span class="option-number">${index + 1}</span>
+                    <span class="option-number">${String.fromCharCode(65 + index)}</span>
                     <span>${option}</span>
                 `;
                 
                 optionElement.addEventListener('click', () => {
-                    // Снимаем выделение с других
                     document.querySelectorAll('.option-btn').forEach(el => {
                         el.classList.remove('selected');
                     });
-                    
-                    // Выделяем выбранный
                     optionElement.classList.add('selected');
                     selectedAnswers = [index];
                 });
@@ -1040,7 +769,6 @@
             elements.answerContainer.appendChild(container);
         }
         
-        // Множественный выбор
         function loadMultipleChoice(question) {
             const container = document.createElement('div');
             container.className = 'options-container';
@@ -1070,114 +798,102 @@
             elements.answerContainer.appendChild(container);
         }
         
-        // Соотнесение (мобильная версия)
-        function loadMatchingMobile(question) {
+        function loadMatching(question) {
             const container = document.createElement('div');
-            container.className = 'matching-mobile';
+            container.className = 'matching-container';
             
             question.leftItems.forEach((term, index) => {
-                const pairDiv = document.createElement('div');
-                pairDiv.className = 'matching-pair';
+                const row = document.createElement('div');
+                row.className = 'matching-row';
                 
                 const termDiv = document.createElement('div');
                 termDiv.className = 'matching-term';
                 termDiv.textContent = term;
-                termDiv.dataset.term = term;
                 
-                const arrow = document.createElement('div');
-                arrow.className = 'matching-arrow';
-                arrow.innerHTML = '→';
-                
-                const dropdown = document.createElement('select');
-                dropdown.className = 'matching-dropdown';
-                dropdown.innerHTML = `<option value="">Выбери ответ</option>`;
+                const select = document.createElement('select');
+                select.className = 'matching-select';
+                select.innerHTML = '<option value="">Выбери ответ</option>';
                 
                 question.rightItems.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item;
                     option.textContent = item;
-                    dropdown.appendChild(option);
+                    select.appendChild(option);
                 });
                 
-                dropdown.addEventListener('change', function() {
-                    if (this.value) {
-                        this.classList.add('selected');
-                    } else {
-                        this.classList.remove('selected');
+                row.appendChild(termDiv);
+                row.appendChild(select);
+                container.appendChild(row);
+            });
+            
+            elements.answerContainer.appendChild(container);
+        }
+        
+        function loadSequence(question) {
+            const container = document.createElement('div');
+            container.className = 'sequence-simple';
+            
+            const shuffledSteps = [...question.steps]
+                .map((step, index) => ({step, originalIndex: index}))
+                .sort(() => Math.random() - 0.5);
+            
+            shuffledSteps.forEach((item, currentIndex) => {
+                const stepElement = document.createElement('div');
+                stepElement.className = 'sequence-item';
+                stepElement.innerHTML = `
+                    <span>${item.step}</span>
+                    <div class="seq-buttons">
+                        <button class="seq-btn" ${currentIndex === 0 ? 'disabled' : ''}>↑</button>
+                        <button class="seq-btn" ${currentIndex === shuffledSteps.length - 1 ? 'disabled' : ''}>↓</button>
+                    </div>
+                `;
+                stepElement.dataset.originalIndex = item.originalIndex;
+                
+                const upBtn = stepElement.querySelector('.seq-btn:nth-child(1)');
+                const downBtn = stepElement.querySelector('.seq-btn:nth-child(2)');
+                
+                upBtn.addEventListener('click', () => {
+                    if (currentIndex > 0) {
+                        const prevElement = container.children[currentIndex - 1];
+                        container.insertBefore(stepElement, prevElement);
+                        updateSequenceButtons();
                     }
                 });
                 
-                pairDiv.appendChild(termDiv);
-                pairDiv.appendChild(arrow);
-                pairDiv.appendChild(dropdown);
-                container.appendChild(pairDiv);
-            });
-            
-            elements.answerContainer.appendChild(container);
-        }
-        
-        // Последовательность
-        function loadSequence(question) {
-            const container = document.createElement('div');
-            container.className = 'sequence-container';
-            
-            // Перемешиваем шаги
-            const shuffledSteps = [...question.steps]
-                .map((step, index) => ({step, index}))
-                .sort(() => Math.random() - 0.5);
-            
-            shuffledSteps.forEach((item, position) => {
-                const stepElement = document.createElement('div');
-                stepElement.className = 'sequence-item';
-                stepElement.dataset.index = item.index;
-                stepElement.innerHTML = `
-                    <div class="sequence-number">${position + 1}</div>
-                    <div class="sequence-text">${item.step}</div>
-                    <div class="sequence-handle">☰</div>
-                `;
+                downBtn.addEventListener('click', () => {
+                    if (currentIndex < shuffledSteps.length - 1) {
+                        const nextElement = container.children[currentIndex + 1];
+                        container.insertBefore(nextElement, stepElement);
+                        updateSequenceButtons();
+                    }
+                });
                 
-                // Добавляем touch/mouse события для перетаскивания
-                makeDraggable(stepElement, container);
                 container.appendChild(stepElement);
             });
             
+            function updateSequenceButtons() {
+                const items = container.children;
+                for (let i = 0; i < items.length; i++) {
+                    const buttons = items[i].querySelectorAll('.seq-btn');
+                    buttons[0].disabled = i === 0;
+                    buttons[1].disabled = i === items.length - 1;
+                }
+            }
+            
+            updateSequenceButtons();
             elements.answerContainer.appendChild(container);
         }
         
-        // Заполнение пропусков
         function loadFillBlanks(question) {
             const container = document.createElement('div');
-            container.className = 'fill-blanks';
+            container.className = 'code-blanks';
             
-            // Показываем текст с пропусками
-            const textDiv = document.createElement('div');
-            textDiv.className = 'blank-text';
-            textDiv.innerHTML = question.code;
+            const codeDiv = document.createElement('div');
+            codeDiv.innerHTML = question.code;
             
-            // Делаем пропуски кликабельными
-            setTimeout(() => {
-                textDiv.querySelectorAll('.blank').forEach(blank => {
-                    blank.addEventListener('click', function() {
-                        // Снимаем выделение с других пропусков
-                        textDiv.querySelectorAll('.blank').forEach(b => {
-                            b.classList.remove('active');
-                        });
-                        
-                        // Выделяем текущий
-                        this.classList.add('active');
-                        activeBlank = this;
-                        
-                        // Показываем подсказку
-                        showHint('Выбери вариант из списка ниже, чтобы заполнить пропуск!');
-                    });
-                });
-            }, 100);
-            
-            // Создаем варианты для заполнения
             const optionsDiv = document.createElement('div');
             optionsDiv.className = 'blank-options';
             
-            // Собираем все уникальные варианты
             const allOptions = [];
             Object.values(question.blanks).forEach(arr => {
                 arr.forEach(opt => {
@@ -1185,7 +901,6 @@
                 });
             });
             
-            // Создаем кнопки вариантов
             allOptions.forEach(option => {
                 const optionBtn = document.createElement('button');
                 optionBtn.className = 'blank-option';
@@ -1204,148 +919,103 @@
                 optionsDiv.appendChild(optionBtn);
             });
             
-            container.appendChild(textDiv);
+            setTimeout(() => {
+                codeDiv.querySelectorAll('.blank').forEach(blank => {
+                    blank.addEventListener('click', function() {
+                        codeDiv.querySelectorAll('.blank').forEach(b => {
+                            b.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                        activeBlank = this;
+                        
+                        optionsDiv.querySelectorAll('.blank-option').forEach(btn => {
+                            btn.classList.remove('used');
+                        });
+                    });
+                });
+            }, 100);
+            
+            container.appendChild(codeDiv);
             container.appendChild(optionsDiv);
             elements.answerContainer.appendChild(container);
         }
         
-        // Найди ошибку
         function loadFindError(question) {
             const container = document.createElement('div');
-            container.className = 'find-error';
+            
+            const codeDiv = document.createElement('div');
+            codeDiv.className = 'code-block';
             
             question.code.forEach((line, index) => {
                 const lineDiv = document.createElement('div');
                 lineDiv.className = 'code-line';
                 lineDiv.innerHTML = `
-                    <span class="line-number">${index + 1}.</span>
-                    <span class="line-text">${line}</span>
+                    <span style="color: #95a5a6; margin-right: 10px;">${index + 1}</span>
+                    <span>${line}</span>
                 `;
                 
                 lineDiv.addEventListener('click', function() {
-                    // Снимаем выделение с других строк
-                    container.querySelectorAll('.code-line').forEach(l => {
+                    codeDiv.querySelectorAll('.code-line').forEach(l => {
                         l.classList.remove('selected');
                     });
-                    
-                    // Выделяем текущую строку
                     this.classList.add('selected');
                     selectedAnswers = [index + 1];
                 });
                 
-                container.appendChild(lineDiv);
+                codeDiv.appendChild(lineDiv);
             });
             
+            container.appendChild(codeDiv);
             elements.answerContainer.appendChild(container);
         }
         
-        // Собери программу
         function loadBuildProgram(question) {
             const container = document.createElement('div');
             
-            // Область с блоками
+            const hint = document.createElement('div');
+            hint.style.cssText = 'color: #666; font-size: 0.9rem; margin-bottom: 10px;';
+            hint.textContent = 'Кликни на блоки в правильном порядке:';
+            
             const blocksDiv = document.createElement('div');
-            blocksDiv.className = 'build-program';
+            blocksDiv.className = 'program-blocks';
             
             question.blocks.forEach((block, index) => {
                 const blockElement = document.createElement('div');
-                blockElement.className = 'code-block';
+                blockElement.className = 'program-block';
                 blockElement.textContent = block;
                 blockElement.dataset.index = index;
                 
-                // Делаем блок перетаскиваемым
-                makeDraggable(blockElement, blocksDiv);
+                blockElement.addEventListener('click', () => {
+                    if (programBlocks.includes(index)) return;
+                    
+                    programBlocks.push(index);
+                    blockElement.classList.add('selected');
+                    updateProgramArea();
+                });
+                
                 blocksDiv.appendChild(blockElement);
             });
             
-            // Область для сборки программы
             const programArea = document.createElement('div');
             programArea.className = 'program-area';
-            programArea.id = 'programArea';
             
+            function updateProgramArea() {
+                programArea.innerHTML = '';
+                programBlocks.forEach(blockIndex => {
+                    const blockClone = document.createElement('div');
+                    blockClone.className = 'program-block';
+                    blockClone.textContent = question.blocks[blockIndex];
+                    blockClone.style.background = '#f0f4ff';
+                    programArea.appendChild(blockClone);
+                });
+            }
+            
+            container.appendChild(hint);
             container.appendChild(blocksDiv);
             container.appendChild(programArea);
             elements.answerContainer.appendChild(container);
         }
         
-        // Функция для создания перетаскиваемых элементов
-        function makeDraggable(element, container) {
-            let isDragging = false;
-            let startX, startY;
-            let initialIndex;
-            
-            element.addEventListener('touchstart', startDrag, {passive: false});
-            element.addEventListener('mousedown', startDrag);
-            
-            function startDrag(e) {
-                isDragging = true;
-                element.classList.add('dragging');
-                
-                const rect = element.getBoundingClientRect();
-                startX = (e.clientX || e.touches[0].clientX) - rect.left;
-                startY = (e.clientY || e.touches[0].clientY) - rect.top;
-                initialIndex = Array.from(container.children).indexOf(element);
-                
-                document.addEventListener('touchmove', drag, {passive: false});
-                document.addEventListener('touchend', stopDrag);
-                document.addEventListener('mousemove', drag);
-                document.addEventListener('mouseup', stopDrag);
-                
-                e.preventDefault();
-            }
-            
-            function drag(e) {
-                if (!isDragging) return;
-                
-                const x = (e.clientX || e.touches[0].clientX) - startX;
-                const y = (e.clientY || e.touches[0].clientY) - startY;
-                
-                element.style.position = 'fixed';
-                element.style.left = x + 'px';
-                element.style.top = y + 'px';
-                element.style.zIndex = '1000';
-                element.style.width = element.offsetWidth + 'px';
-                
-                e.preventDefault();
-            }
-            
-            function stopDrag(e) {
-                if (!isDragging) return;
-                
-                isDragging = false;
-                element.classList.remove('dragging');
-                element.style.position = '';
-                element.style.left = '';
-                element.style.top = '';
-                element.style.zIndex = '';
-                element.style.width = '';
-                
-                // Определяем, куда был перемещен элемент
-                const dropX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX);
-                const dropY = e.clientY || (e.changedTouches && e.changedTouches[0].clientY);
-                
-                if (dropX && dropY) {
-                    const programArea = document.getElementById('programArea');
-                    const programRect = programArea?.getBoundingClientRect();
-                    
-                    if (programRect && 
-                        dropX >= programRect.left && 
-                        dropX <= programRect.right &&
-                        dropY >= programRect.top && 
-                        dropY <= programRect.bottom) {
-                        // Перемещаем в область программы
-                        programArea.appendChild(element);
-                    }
-                }
-                
-                document.removeEventListener('touchmove', drag);
-                document.removeEventListener('touchend', stopDrag);
-                document.removeEventListener('mousemove', drag);
-                document.removeEventListener('mouseup', stopDrag);
-            }
-        }
-        
-        // Проверка ответа
         function checkAnswer() {
             const question = questions[currentQuestion];
             let isCorrect = false;
@@ -1365,25 +1035,23 @@
                     break;
                     
                 case 'matching':
-                    const dropdowns = document.querySelectorAll('.matching-dropdown');
+                    const selects = document.querySelectorAll('.matching-select');
                     let allCorrect = true;
                     
-                    dropdowns.forEach(dropdown => {
-                        const term = dropdown.previousElementSibling.previousElementSibling.textContent;
-                        const selectedValue = dropdown.value;
-                        
-                        if (question.correctPairs[term] !== selectedValue) {
+                    selects.forEach(select => {
+                        const term = select.previousElementSibling.textContent;
+                        if (question.correctPairs[term] !== select.value) {
                             allCorrect = false;
                         }
                     });
                     
-                    isCorrect = allCorrect;
+                    isCorrect = allCorrect && selects.length > 0;
                     break;
                     
                 case 'sequence':
                     const sequenceItems = document.querySelectorAll('.sequence-item');
                     const currentOrder = Array.from(sequenceItems).map(item => 
-                        parseInt(item.dataset.index)
+                        parseInt(item.dataset.originalIndex)
                     );
                     isCorrect = JSON.stringify(currentOrder) === 
                                JSON.stringify(question.correctOrder);
@@ -1403,200 +1071,130 @@
                     break;
                     
                 case 'build-program':
-                    const programBlocks = document.querySelectorAll('#programArea .code-block');
-                    const programOrder = Array.from(programBlocks).map(block => 
-                        parseInt(block.dataset.index)
-                    );
-                    isCorrect = JSON.stringify(programOrder) === 
+                    isCorrect = JSON.stringify(programBlocks) === 
                                JSON.stringify(question.correctOrder);
                     break;
             }
             
-            // Показываем результат
-            showResult(isCorrect, question.explanation);
-            
-            // Обновляем счет
             if (isCorrect) {
                 score += 10;
                 correctAnswers++;
                 elements.score.textContent = score;
                 elements.correct.textContent = correctAnswers;
                 
-                // Анимация успеха
-                document.querySelector('.question-block').classList.add('correct');
+                showNotification('Правильно! +10 баллов', true);
+                elements.questionBlock.style.borderColor = '#2ecc71';
+                setTimeout(() => {
+                    elements.questionBlock.style.borderColor = '#e0e0e0';
+                }, 1000);
+            } else {
+                showNotification('Неправильно! Попробуй еще', false);
+                elements.questionBlock.style.borderColor = '#e74c3c';
+                setTimeout(() => {
+                    elements.questionBlock.style.borderColor = '#e0e0e0';
+                }, 1000);
             }
             
-            elements.nextBtn.style.display = 'block';
+            elements.nextBtn.style.display = 'flex';
+            elements.checkBtn.style.display = 'none';
         }
         
-        // Показать результат
-        function showResult(isCorrect, explanation) {
-            elements.explanationText.textContent = explanation;
-            elements.explanation.classList.add('show');
-            
-            // Подсвечиваем правильные/неправильные ответы
-            const question = questions[currentQuestion];
-            
-            if (question.type === 'single' || question.type === 'multiple') {
-                document.querySelectorAll('.option-btn').forEach((option, index) => {
-                    if (question.type === 'single') {
-                        if (index === question.correct) {
-                            option.classList.add('correct');
-                        } else if (selectedAnswers.includes(index)) {
-                            option.classList.add('incorrect');
-                        }
-                    } else if (question.type === 'multiple') {
-                        if (question.correct.includes(index)) {
-                            option.classList.add('correct');
-                        } else if (selectedAnswers.includes(index) && !question.correct.includes(index)) {
-                            option.classList.add('incorrect');
-                        }
-                    }
-                });
-            }
-        }
-        
-        // Показать подсказку
-        function showHint(text) {
-            elements.hintBubble.textContent = text;
-            elements.hintBubble.classList.add('show');
-            
-            setTimeout(() => {
-                elements.hintBubble.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Показать результаты
         function showResults() {
             const percentage = Math.round((correctAnswers / questions.length) * 100);
-            const totalScore = score;
             
             let grade = '';
             let icon = '';
-            let message = '';
             
             if (percentage >= 90) {
-                grade = 'Отлично!';
+                grade = 'Отлично! 🏆';
                 icon = '🏆';
-                message = 'Ты - суперпрограммист!';
             } else if (percentage >= 70) {
-                grade = 'Хорошо!';
+                grade = 'Хорошо! 👍';
                 icon = '👍';
-                message = 'Отличная работа!';
             } else if (percentage >= 50) {
-                grade = 'Неплохо!';
+                grade = 'Неплохо! 👌';
                 icon = '👌';
-                message = 'Ты на верном пути!';
             } else {
-                grade = 'Попробуй еще!';
+                grade = 'Попробуй еще! 📚';
                 icon = '📚';
-                message = 'Повтори теорию и возвращайся!';
             }
             
             elements.questionText.innerHTML = `
-                <h2>${icon} Тест завершен!</h2>
+                <h2>${icon} Игра завершена!</h2>
                 <p>Правильных ответов: ${correctAnswers}/${questions.length}</p>
-                <p>Набрано баллов: ${totalScore}</p>
-                <p>Оценка: ${grade}</p>
-                <p>${message}</p>
+                <p>Набрано баллов: ${score}</p>
+                <p><strong>${grade}</strong></p>
             `;
             
-            // Прогресс бар
-            const progressBar = document.createElement('div');
-            progressBar.className = 'progress-bar';
-            const progressFill = document.createElement('div');
-            progressFill.className = 'progress-fill';
-            progressFill.style.width = `${percentage}%`;
-            progressBar.appendChild(progressFill);
-            
             elements.answerContainer.innerHTML = `
-                <div class="result-screen">
-                    <div class="result-icon">${icon}</div>
-                    <h3>Рекомендации:</h3>
-                    <p>🎯 Повтори основы алгоритмизации</p>
-                    <p>💻 Практикуйся в написании простых алгоритмов</p>
-                    <p>🎮 Играй в развивающие игры по программированию</p>
-                    <p>📚 Читай книги о программировании для детей</p>
+                <div style="text-align: center; padding: 20px 0;">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">${icon}</div>
+                    <button id="restartBtn" style="
+                        background: linear-gradient(135deg, #4a6ee0, #3a5ed0);
+                        color: white;
+                        border: none;
+                        border-radius: 12px;
+                        padding: 15px 30px;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        margin-top: 20px;
+                    ">
+                        <i class="fas fa-redo"></i> Играть снова
+                    </button>
                 </div>
             `;
             
-            elements.answerContainer.querySelector('.result-screen').prepend(progressBar);
+            document.getElementById('restartBtn').addEventListener('click', () => {
+                location.reload();
+            });
             
-            elements.explanation.style.display = 'none';
             elements.hintBtn.style.display = 'none';
             elements.checkBtn.style.display = 'none';
             elements.nextBtn.style.display = 'none';
             
-            // Кнопка для перезапуска
-            const restartBtn = document.createElement('button');
-            restartBtn.className = 'btn btn-success';
-            restartBtn.innerHTML = '<i class="fas fa-redo"></i> Играть еще раз';
-            restartBtn.style.marginTop = '30px';
-            restartBtn.addEventListener('click', () => {
-                location.reload();
-            });
-            
-            elements.answerContainer.appendChild(restartBtn);
-            
-            // Отправляем результаты в Telegram
-            setTimeout(() => {
-                tg.sendData(JSON.stringify({
-                    action: 'game_complete',
-                    score: totalScore,
-                    correct: correctAnswers,
-                    total: questions.length,
-                    percentage: percentage,
-                    grade: grade
-                }));
-            }, 1000);
+            tg.sendData(JSON.stringify({
+                action: 'game_complete',
+                score: score,
+                correct: correctAnswers,
+                total: questions.length,
+                percentage: percentage
+            }));
         }
         
-        // Настройка обработчиков событий
         function setupEventListeners() {
-            // Подсказка
             elements.hintBtn.addEventListener('click', () => {
                 const hints = [
-                    "Внимательно читай вопрос! 📖",
-                    "Подумай логически! 🤔",
-                    "Не торопись, у тебя есть время! ⏳",
-                    "Проверь свой ответ перед отправкой! ✅",
-                    "Если не уверен - используй метод исключения! 🎯"
+                    "Внимательно читай вопрос!",
+                    "Попробуй исключить неправильные варианты!",
+                    "Помни про порядок действий в программировании!",
+                    "Проверь свой ответ перед отправкой!"
                 ];
-                const randomHint = hints[Math.floor(Math.random() * hints.length)];
-                showHint(randomHint);
+                alert(hints[Math.floor(Math.random() * hints.length)]);
             });
             
-            // Проверка ответа
             elements.checkBtn.addEventListener('click', checkAnswer);
             
-            // Следующий вопрос
             elements.nextBtn.addEventListener('click', () => {
                 currentQuestion++;
+                elements.checkBtn.style.display = 'flex';
                 loadQuestion(currentQuestion);
             });
             
-            // Обработка клавиатуры
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && elements.checkBtn.style.display !== 'none') {
-                    checkAnswer();
-                } else if (e.key === ' ' && elements.hintBtn.style.display !== 'none') {
-                    elements.hintBtn.click();
-                }
-            });
+            // Предотвращаем масштабирование
+            document.addEventListener('touchstart', function(e) {
+                if (e.touches.length > 1) e.preventDefault();
+            }, { passive: false });
+            
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(e) {
+                const now = Date.now();
+                if (now - lastTouchEnd <= 300) e.preventDefault();
+                lastTouchEnd = now;
+            }, false);
         }
         
-        // Запуск игры при загрузке
         document.addEventListener('DOMContentLoaded', initGame);
-        
-        // Предотвращение масштабирования при двойном тапе на мобильных
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function(event) {
-            const now = Date.now();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
     </script>
 </body>
 </html>
