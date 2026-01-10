@@ -95,6 +95,16 @@
             border-color: #4299e1;
         }
         
+        .option.correct {
+            background: #c6f6d5;
+            border-color: #48bb78;
+        }
+        
+        .option.incorrect {
+            background: #fed7d7;
+            border-color: #f56565;
+        }
+        
         .button {
             background: #4299e1;
             color: white;
@@ -112,13 +122,27 @@
             transform: translateY(-2px);
         }
         
+        .button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
         .button-skip {
             background: #a0aec0;
-            margin-left: 10px;
         }
         
         .button-skip:hover {
             background: #718096;
+        }
+        
+        .button-next {
+            background: #48bb78;
+            display: none;
+        }
+        
+        .button-next:hover {
+            background: #38a169;
         }
         
         .result {
@@ -152,6 +176,13 @@
             margin-top: 30px;
         }
         
+        .menu-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
         .menu-button {
             background: #9f7aea;
             color: white;
@@ -160,7 +191,6 @@
             border-radius: 10px;
             font-size: 1.1em;
             cursor: pointer;
-            margin: 5px;
             transition: all 0.3s;
         }
         
@@ -190,6 +220,39 @@
             color: #718096;
             font-size: 0.9em;
         }
+        
+        .question-image {
+            max-width: 100%;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: block;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .button, .menu-button {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
@@ -214,9 +277,11 @@
             </div>
             
             <div class="menu">
-                <button class="menu-button" onclick="startGame()">🚀 Начать игру</button>
-                <button class="menu-button" onclick="showRules()">📚 Правила</button>
-                <button class="menu-button" onclick="showTopics()">🎯 Выбор темы</button>
+                <div class="menu-buttons">
+                    <button class="menu-button" onclick="startGame()">🚀 Начать игру</button>
+                    <button class="menu-button" onclick="showRules()">📚 Правила</button>
+                    <button class="menu-button" onclick="showTopics()">🎯 Выбор темы</button>
+                </div>
             </div>
         </div>
         
@@ -229,6 +294,7 @@
             <div class="question">
                 <div class="question-number" id="questionNumber">Вопрос 1/10</div>
                 <div class="question-text" id="questionText">Текст вопроса появится здесь</div>
+                <div id="imageContainer"></div>
                 <div class="options" id="optionsContainer"></div>
             </div>
             
@@ -237,9 +303,12 @@
             </div>
             
             <div class="menu">
-                <button class="button" onclick="checkAnswer()">✅ Проверить</button>
-                <button class="button button-skip" onclick="skipQuestion()">⏭ Пропустить</button>
-                <button class="menu-button" onclick="backToMenu()">🏠 В меню</button>
+                <div class="controls" id="controlsContainer">
+                    <button class="button" id="checkButton" onclick="checkAnswer()" disabled>✅ Проверить</button>
+                    <button class="button button-skip" id="skipButton" onclick="skipQuestion()">⏭ Пропустить</button>
+                    <button class="button button-next" id="nextButton" onclick="nextQuestion()">➡️ Следующий вопрос</button>
+                    <button class="menu-button" onclick="backToMenu()">🏠 В меню</button>
+                </div>
             </div>
         </div>
         
@@ -249,36 +318,98 @@
     </div>
     
     <script>
-        // Примерные вопросы (в реальности будут загружаться из файла)
+        // Вопросы для игры (в реальном проекте можно загружать из JSON)
         const questions = [
             {
-                type: 1,
+                id: 1,
+                type: 1, // 1 - одиночный выбор, 2 - множественный
                 question: "Что такое Конституция?",
-                options: ["Основной закон государства", "Собрание нормативных актов", "Договор между странами", "Решение суда"],
-                correct: 1
+                options: [
+                    "Основной закон государства", 
+                    "Собрание нормативных актов", 
+                    "Договор между странами", 
+                    "Решение суда"
+                ],
+                correct: 1,
+                points: 10,
+                explanation: "Конституция - это основной закон государства, который определяет его устройство, права и обязанности граждан."
             },
             {
+                id: 2,
                 type: 1,
                 question: "С какого возраста ребенок имеет право выражать свое мнение?",
-                options: ["С 10 лет", "С 14 лет", "С 16 лет", "С рождения"],
-                correct: 4
+                options: [
+                    "С 10 лет", 
+                    "С 14 лет", 
+                    "С 16 лет", 
+                    "С рождения"
+                ],
+                correct: 4,
+                points: 10,
+                explanation: "Ребенок имеет право выражать свое мнение с момента рождения. Это право защищено Конвенцией о правах ребенка."
             },
             {
-                type: 2,
+                id: 3,
+                type: 2, // Множественный выбор
                 question: "Какие права относятся к основным правам человека? (выберите все)",
-                options: ["Право на жизнь", "Право на образование", "Право на частную собственность", "Право на работу"],
-                correct: [1, 2, 3, 4]
+                options: [
+                    "Право на жизнь", 
+                    "Право на образование", 
+                    "Право на частную собственность", 
+                    "Право на работу"
+                ],
+                correct: [1, 2, 3, 4],
+                points: 15,
+                explanation: "Все перечисленные права являются основными правами человека, закрепленными в международных документах."
+            },
+            {
+                id: 4,
+                type: 1,
+                question: "Кто является главой государства в Беларуси?",
+                options: [
+                    "Президент", 
+                    "Премьер-министр", 
+                    "Председатель Парламента", 
+                    "Министр внутренних дел"
+                ],
+                correct: 1,
+                points: 10,
+                explanation: "Президент Республики Беларусь является главой государства и гарантом Конституции."
+            },
+            {
+                id: 5,
+                type: 1,
+                question: "Что означает правовое государство?",
+                options: [
+                    "Государство, где все подчиняются закону", 
+                    "Государство с сильной армией", 
+                    "Государство с развитой экономикой", 
+                    "Государство с большим населением"
+                ],
+                correct: 1,
+                points: 10,
+                explanation: "Правовое государство - это государство, в котором все граждане и органы власти подчиняются закону."
             }
         ];
         
         let currentQuestion = 0;
         let score = 0;
         let selectedAnswers = [];
+        let answerChecked = false;
         
         function startGame() {
             document.getElementById('startScreen').style.display = 'none';
             document.getElementById('gameArea').style.display = 'block';
+            resetGame();
             loadQuestion();
+        }
+        
+        function resetGame() {
+            currentQuestion = 0;
+            score = 0;
+            selectedAnswers = [];
+            answerChecked = false;
+            updateScore();
         }
         
         function loadQuestion() {
@@ -289,12 +420,25 @@
             const optionsContainer = document.getElementById('optionsContainer');
             optionsContainer.innerHTML = '';
             selectedAnswers = [];
+            answerChecked = false;
+            
+            // Очищаем контейнер изображения
+            document.getElementById('imageContainer').innerHTML = '';
+            
+            // Сбрасываем кнопки
+            document.getElementById('checkButton').disabled = true;
+            document.getElementById('checkButton').style.display = 'inline-block';
+            document.getElementById('skipButton').style.display = 'inline-block';
+            document.getElementById('nextButton').style.display = 'none';
+            
+            // Скрываем результат
+            document.getElementById('resultMessage').style.display = 'none';
             
             if (q.type === 1 || q.type === 2) {
                 q.options.forEach((option, index) => {
                     const optionDiv = document.createElement('div');
                     optionDiv.className = 'option';
-                    optionDiv.textContent = `${index + 1}. ${option}`;
+                    optionDiv.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
                     optionDiv.onclick = () => selectAnswer(index + 1);
                     optionsContainer.appendChild(optionDiv);
                 });
@@ -306,89 +450,140 @@
         }
         
         function selectAnswer(answer) {
+            if (answerChecked) return;
+            
             const q = questions[currentQuestion];
+            const options = document.querySelectorAll('.option');
             
             if (q.type === 1) {
                 // Снимаем выделение со всех
-                document.querySelectorAll('.option').forEach(opt => {
+                options.forEach(opt => {
                     opt.classList.remove('selected');
                 });
                 // Выделяем выбранный
-                event.target.classList.add('selected');
+                options[answer - 1].classList.add('selected');
                 selectedAnswers = [answer];
             } else if (q.type === 2) {
                 // Множественный выбор
                 if (selectedAnswers.includes(answer)) {
                     selectedAnswers = selectedAnswers.filter(a => a !== answer);
-                    event.target.classList.remove('selected');
+                    options[answer - 1].classList.remove('selected');
                 } else {
                     selectedAnswers.push(answer);
-                    event.target.classList.add('selected');
+                    options[answer - 1].classList.add('selected');
                 }
             }
+            
+            // Активируем кнопку "Проверить"
+            document.getElementById('checkButton').disabled = false;
         }
         
         function checkAnswer() {
+            if (answerChecked) return;
+            
             const q = questions[currentQuestion];
             const resultDiv = document.getElementById('resultMessage');
             const resultText = document.getElementById('resultText');
+            const options = document.querySelectorAll('.option');
             
+            // Показываем правильные/неправильные ответы
             if (q.type === 1) {
+                options.forEach((opt, index) => {
+                    if (index + 1 === q.correct) {
+                        opt.classList.add('correct');
+                    } else if (selectedAnswers[0] === index + 1 && selectedAnswers[0] !== q.correct) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+                
                 if (selectedAnswers[0] === q.correct) {
-                    score += 10;
+                    score += q.points;
                     resultDiv.className = 'result correct';
-                    resultText.innerHTML = '✅ <b>Правильно!</b> +10 баллов';
+                    resultText.innerHTML = '✅ <b>Правильно!</b> ' + 
+                                          `<br><br>${q.explanation}` +
+                                          `<br><br>+${q.points} баллов`;
                 } else {
                     resultDiv.className = 'result incorrect';
-                    resultText.innerHTML = `❌ <b>Неправильно.</b><br>✅ Правильный ответ: ${q.options[q.correct - 1]}`;
+                    resultText.innerHTML = '❌ <b>Неправильно.</b>' +
+                                          `<br><br>✅ Правильный ответ: ${q.options[q.correct - 1]}` +
+                                          `<br><br>${q.explanation}`;
                 }
             } else if (q.type === 2) {
                 const correctSorted = [...q.correct].sort();
                 const userSorted = [...selectedAnswers].sort();
                 
+                // Подсвечиваем варианты
+                options.forEach((opt, index) => {
+                    if (q.correct.includes(index + 1)) {
+                        opt.classList.add('correct');
+                    } else if (selectedAnswers.includes(index + 1) && !q.correct.includes(index + 1)) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+                
                 if (JSON.stringify(correctSorted) === JSON.stringify(userSorted)) {
-                    score += 15;
+                    score += q.points;
                     resultDiv.className = 'result correct';
-                    resultText.innerHTML = '✅ <b>Все правильно!</b> +15 баллов';
+                    resultText.innerHTML = '✅ <b>Все правильно!</b> ' +
+                                          `<br><br>${q.explanation}` +
+                                          `<br><br>+${q.points} баллов`;
                 } else {
                     resultDiv.className = 'result incorrect';
                     const correctStr = q.correct.map(c => q.options[c-1]).join(', ');
-                    resultText.innerHTML = `❌ <b>Не все правильно.</b><br>✅ Правильные ответы: ${correctStr}`;
+                    resultText.innerHTML = '❌ <b>Не все правильно.</b>' +
+                                          `<br><br>✅ Правильные ответы: ${correctStr}` +
+                                          `<br><br>${q.explanation}`;
                 }
             }
             
             resultDiv.style.display = 'block';
-            document.getElementById('score').textContent = score;
+            answerChecked = true;
+            updateScore();
             
-            // Переход к следующему вопросу через 3 секунды
-            setTimeout(() => {
-                currentQuestion++;
-                if (currentQuestion < questions.length) {
-                    loadQuestion();
-                    resultDiv.style.display = 'none';
-                } else {
-                    endGame();
-                }
-            }, 3000);
+            // Показываем кнопку "Следующий вопрос", скрываем "Проверить" и "Пропустить"
+            document.getElementById('checkButton').style.display = 'none';
+            document.getElementById('skipButton').style.display = 'none';
+            document.getElementById('nextButton').style.display = 'inline-block';
         }
         
         function skipQuestion() {
+            if (answerChecked) return;
+            
+            const q = questions[currentQuestion];
             const resultDiv = document.getElementById('resultMessage');
             const resultText = document.getElementById('resultText');
             
+            // Показываем правильный ответ
+            const options = document.querySelectorAll('.option');
+            if (q.type === 1) {
+                options[q.correct - 1].classList.add('correct');
+            } else if (q.type === 2) {
+                q.correct.forEach(c => {
+                    options[c - 1].classList.add('correct');
+                });
+            }
+            
             resultDiv.className = 'result';
-            resultText.innerHTML = '⏭ Вопрос пропущен';
+            resultText.innerHTML = '⏭ Вопрос пропущен.' +
+                                 `<br><br>${q.explanation}`;
             resultDiv.style.display = 'block';
             
-            setTimeout(() => {
-                currentQuestion++;
-                if (currentQuestion < questions.length) {
-                    loadQuestion();
-                    resultDiv.style.display = 'none';
-                } else {
-                    endGame();
-                }
-            }, 2000);
+            answerChecked = true;
+            
+            // Показываем кнопку "Следующий вопрос", скрываем "Проверить" и "Пропустить"
+            document.getElementById('checkButton').style.display = 'none';
+            document.getElementById('skipButton').style.display = 'none';
+            document.getElementById('nextButton').style.display = 'inline-block';
+        }
+        
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
         }
         
         function endGame() {
@@ -397,41 +592,54 @@
                     <div class="question-text">
                         🏆 <b>Игра завершена!</b>
                         <br><br>
-                        📊 <b>Твой результат:</b> ${score} баллов
+                        📊 <b>Твой результат:</b> ${score} баллов из ${questions.length * 10} возможных
                         <br><br>
-                        ${score >= 30 ? '🎯 Отлично! Ты знаток права!' : 
-                          score >= 20 ? '👍 Хорошо! Продолжай учиться!' : 
+                        ${score >= questions.length * 8 ? '🎯 Отлично! Ты знаток права!' : 
+                          score >= questions.length * 6 ? '👍 Хорошо! Продолжай учиться!' : 
                           '💪 Неплохо для начала! Попробуй еще раз!'}
+                        <br><br>
+                        Правильных ответов: ${Math.round(score / 10)} из ${questions.length}
                     </div>
                 </div>
                 <div class="menu">
-                    <button class="menu-button" onclick="restartGame()">🔄 Начать заново</button>
-                    <button class="menu-button" onclick="backToMenu()">🏠 В меню</button>
+                    <div class="menu-buttons">
+                        <button class="menu-button" onclick="restartGame()">🔄 Начать заново</button>
+                        <button class="menu-button" onclick="backToMenu()">🏠 В главное меню</button>
+                    </div>
                 </div>
             `;
         }
         
         function restartGame() {
-            currentQuestion = 0;
-            score = 0;
-            startGame();
+            resetGame();
+            loadQuestion();
         }
         
         function backToMenu() {
             document.getElementById('gameArea').style.display = 'none';
             document.getElementById('startScreen').style.display = 'block';
-            currentQuestion = 0;
-            score = 0;
+        }
+        
+        function updateScore() {
+            document.getElementById('score').textContent = score;
         }
         
         function showRules() {
-            alert(`📚 Правила игры:\n\n1. Выбирай правильные ответы\n2. За правильный ответ: +10 баллов\n3. Можно пропускать вопросы\n4. Играй и изучай права!`);
+            alert(`📚 Правила игры:\n\n1. Выбирай правильные ответы\n2. За правильный ответ: +10 баллов\n3. За несколько правильных ответов: +15 баллов\n4. Можно пропускать вопросы\n5. После проверки ответа нажми "Следующий вопрос"\n6. Играй и изучай права!`);
         }
         
         function showTopics() {
-            alert(`🎯 Темы для изучения:\n\n1. Основы права\n2. Права детей\n3. Государственное устройство\n4. Обязанности граждан\n\nВыбери тему в меню бота!`);
+            const topics = [
+                "🎯 Основы права и законы",
+                "👶 Права детей",
+                "🏛 Государственное устройство Беларуси",
+                "⚖️ Обязанности граждан",
+                "📚 Образование и культура",
+                "🛡 Безопасность и защита"
+            ].join("\n\n");
+            
+            alert(`Доступные темы для изучения:\n\n${topics}\n\nВыбери тему в меню бота!`);
         }
     </script>
 </body>
 </html>
-
