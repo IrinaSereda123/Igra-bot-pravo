@@ -47,6 +47,50 @@
             display: none;
         }
         
+        .stats-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #718096;
+        }
+        
+        .record-badge {
+            background: linear-gradient(135deg, #f6ad55, #ed8936);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 5px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
         .question {
             background: #f7fafc;
             border-radius: 15px;
@@ -138,11 +182,18 @@
         
         .button-next {
             background: #48bb78;
-            display: none;
         }
         
         .button-next:hover {
             background: #38a169;
+        }
+        
+        .button-restart {
+            background: #9f7aea;
+        }
+        
+        .button-restart:hover {
+            background: #805ad5;
         }
         
         .result {
@@ -168,7 +219,6 @@
             text-align: center;
             font-size: 1.5em;
             color: #2d3748;
-            margin: 20px 0;
         }
         
         .menu {
@@ -209,7 +259,7 @@
         
         .progress-fill {
             height: 100%;
-            background: #48bb78;
+            background: linear-gradient(90deg, #4299e1, #48bb78);
             width: 0%;
             transition: width 0.5s;
         }
@@ -221,18 +271,53 @@
             font-size: 0.9em;
         }
         
-        .question-image {
-            max-width: 100%;
-            border-radius: 10px;
-            margin: 15px 0;
-            display: block;
-        }
-        
         .controls {
             display: flex;
             gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
+        }
+        
+        .history-panel {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .history-title {
+            font-size: 1.1em;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-date {
+            color: #718096;
+            font-size: 0.9em;
+        }
+        
+        .history-score {
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .new-record {
+            color: #48bb78;
+            font-weight: bold;
+            animation: pulse 1s infinite;
         }
         
         @media (max-width: 600px) {
@@ -244,12 +329,21 @@
                 font-size: 2em;
             }
             
+            .stats-panel {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
             .button, .menu-button {
                 padding: 12px 20px;
                 font-size: 1em;
             }
             
             .controls {
+                flex-direction: column;
+            }
+            
+            .menu-buttons {
                 flex-direction: column;
             }
         }
@@ -272,29 +366,63 @@
                     <br>• Какие права есть у детей
                     <br>• Как работает государство
                     <br><br>
-                    Готов начать?
+                    Твой прогресс сохраняется!
                 </div>
+            </div>
+            
+            <div class="stats-panel" id="startStats">
+                <div class="stat-item">
+                    <div class="stat-value" id="bestScoreDisplay">0</div>
+                    <div class="stat-label">РЕКОРД</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="gamesPlayed">0</div>
+                    <div class="stat-label">ИГР СЫГРАНО</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalScore">0</div>
+                    <div class="stat-label">ВСЕГО БАЛЛОВ</div>
+                </div>
+            </div>
+            
+            <div id="gameHistory" class="history-panel" style="display: none;">
+                <div class="history-title">📊 Последние игры:</div>
+                <div id="historyList"></div>
             </div>
             
             <div class="menu">
                 <div class="menu-buttons">
                     <button class="menu-button" onclick="startGame()">🚀 Начать игру</button>
                     <button class="menu-button" onclick="showRules()">📚 Правила</button>
-                    <button class="menu-button" onclick="showTopics()">🎯 Выбор темы</button>
+                    <button class="menu-button" onclick="showStats()">📈 Статистика</button>
+                    <button class="menu-button" onclick="showTopics()">🎯 Темы</button>
                 </div>
             </div>
         </div>
         
         <div id="gameArea" class="game-area">
-            <div class="score">Баллы: <span id="score">0</span></div>
+            <div class="stats-panel">
+                <div class="stat-item">
+                    <div class="stat-value" id="currentScore">0</div>
+                    <div class="stat-label">ТЕКУЩИЙ СЧЕТ</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="questionCounter">1/5</div>
+                    <div class="stat-label">ВОПРОС</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="bestScoreGame">0</div>
+                    <div class="stat-label">ВАШ РЕКОРД</div>
+                    <div id="recordBadge" class="record-badge" style="display: none;">НОВЫЙ РЕКОРД!</div>
+                </div>
+            </div>
+            
             <div class="progress-bar">
                 <div class="progress-fill" id="progress"></div>
             </div>
             
             <div class="question">
-                <div class="question-number" id="questionNumber">Вопрос 1/10</div>
                 <div class="question-text" id="questionText">Текст вопроса появится здесь</div>
-                <div id="imageContainer"></div>
                 <div class="options" id="optionsContainer"></div>
             </div>
             
@@ -303,11 +431,12 @@
             </div>
             
             <div class="menu">
-                <div class="controls" id="controlsContainer">
+                <div class="controls">
                     <button class="button" id="checkButton" onclick="checkAnswer()" disabled>✅ Проверить</button>
                     <button class="button button-skip" id="skipButton" onclick="skipQuestion()">⏭ Пропустить</button>
-                    <button class="button button-next" id="nextButton" onclick="nextQuestion()">➡️ Следующий вопрос</button>
-                    <button class="menu-button" onclick="backToMenu()">🏠 В меню</button>
+                    <button class="button button-next" id="nextButton" onclick="nextQuestion()" style="display: none;">➡️ Далее</button>
+                    <button class="button button-restart" onclick="restartGame()" style="display: none;">🔄 Заново</button>
+                    <button class="menu-button" onclick="backToMenu()">🏠 Меню</button>
                 </div>
             </div>
         </div>
@@ -318,17 +447,17 @@
     </div>
     
     <script>
-        // Вопросы для игры (в реальном проекте можно загружать из JSON)
+        // Вопросы для игры
         const questions = [
             {
                 id: 1,
-                type: 1, // 1 - одиночный выбор, 2 - множественный
-                question: "Что такое Конституция?",
+                type: 1, // 1 - одиночный выбор
+                question: "Что такое Конституция Республики Беларусь?",
                 options: [
                     "Основной закон государства", 
-                    "Собрание нормативных актов", 
-                    "Договор между странами", 
-                    "Решение суда"
+                    "Сборник законов", 
+                    "Устав школы", 
+                    "Правила поведения"
                 ],
                 correct: 1,
                 points: 10,
@@ -337,7 +466,7 @@
             {
                 id: 2,
                 type: 1,
-                question: "С какого возраста ребенок имеет право выражать свое мнение?",
+                question: "С какого возраста ребенок имеет право выражать свое мнение в Беларуси?",
                 options: [
                     "С 10 лет", 
                     "С 14 лет", 
@@ -351,35 +480,35 @@
             {
                 id: 3,
                 type: 2, // Множественный выбор
-                question: "Какие права относятся к основным правам человека? (выберите все)",
+                question: "Какие основные права есть у детей в Беларуси? (выберите все верные)",
                 options: [
-                    "Право на жизнь", 
+                    "Право на жизнь и развитие", 
                     "Право на образование", 
-                    "Право на частную собственность", 
-                    "Право на работу"
+                    "Право на отдых и досуг", 
+                    "Право на работу с 12 лет"
                 ],
-                correct: [1, 2, 3, 4],
+                correct: [1, 2, 3],
                 points: 15,
-                explanation: "Все перечисленные права являются основными правами человека, закрепленными в международных документах."
+                explanation: "Дети имеют право на жизнь, образование, отдых. Работать разрешено только с 14 лет с согласия родителей."
             },
             {
                 id: 4,
                 type: 1,
-                question: "Кто является главой государства в Беларуси?",
+                question: "Кто является Президентом Республики Беларусь?",
                 options: [
-                    "Президент", 
-                    "Премьер-министр", 
-                    "Председатель Парламента", 
-                    "Министр внутренних дел"
+                    "Александр Лукашенко", 
+                    "Сергей Румас", 
+                    "Наталья Кочанова", 
+                    "Игорь Сергеенко"
                 ],
                 correct: 1,
                 points: 10,
-                explanation: "Президент Республики Беларусь является главой государства и гарантом Конституции."
+                explanation: "Александр Григорьевич Лукашенко является Президентом Республики Беларусь с 1994 года."
             },
             {
                 id: 5,
                 type: 1,
-                question: "Что означает правовое государство?",
+                question: "Что такое правовое государство?",
                 options: [
                     "Государство, где все подчиняются закону", 
                     "Государство с сильной армией", 
@@ -389,32 +518,199 @@
                 correct: 1,
                 points: 10,
                 explanation: "Правовое государство - это государство, в котором все граждане и органы власти подчиняются закону."
+            },
+            {
+                id: 6,
+                type: 1,
+                question: "С какого возраста наступает уголовная ответственность в Беларуси?",
+                options: [
+                    "С 14 лет", 
+                    "С 16 лет", 
+                    "С 18 лет", 
+                    "С 21 года"
+                ],
+                correct: 2,
+                points: 10,
+                explanation: "Уголовная ответственность в Беларуси наступает с 16 лет, за особо тяжкие преступления - с 14 лет."
+            },
+            {
+                id: 7,
+                type: 2,
+                question: "Какие органы власти есть в Беларуси? (выберите все верные)",
+                options: [
+                    "Президент", 
+                    "Парламент (Национальное собрание)", 
+                    "Правительство (Совет Министров)", 
+                    "Конституционный Суд"
+                ],
+                correct: [1, 2, 3, 4],
+                points: 20,
+                explanation: "В Беларуси есть все перечисленные органы власти, которые осуществляют государственное управление."
+            },
+            {
+                id: 8,
+                type: 1,
+                question: "Что такое местное самоуправление?",
+                options: [
+                    "Управление делами на местном уровне", 
+                    "Правительство страны", 
+                    "Судебная система", 
+                    "Вооруженные силы"
+                ],
+                correct: 1,
+                points: 10,
+                explanation: "Местное самоуправление - это самостоятельная деятельность граждан по решению вопросов местного значения."
+            },
+            {
+                id: 9,
+                type: 1,
+                question: "Кто защищает права детей в Беларуси?",
+                options: [
+                    "Родители, школа, государство", 
+                    "Только родители", 
+                    "Только школа", 
+                    "Только милиция"
+                ],
+                correct: 1,
+                points: 10,
+                explanation: "Права детей защищают родители, образовательные учреждения и государство в целом."
+            },
+            {
+                id: 10,
+                type: 1,
+                question: "Что такое закон?",
+                options: [
+                    "Общеобязательное правило поведения", 
+                    "Совет взрослых", 
+                    "Школьное правило", 
+                    "Традиция народа"
+                ],
+                correct: 1,
+                points: 10,
+                explanation: "Закон - это общеобязательное правило поведения, установленное государством."
             }
         ];
-        
-        let currentQuestion = 0;
-        let score = 0;
+
+        // Данные пользователя
+        let userData = {
+            bestScore: 0,
+            gamesPlayed: 0,
+            totalScore: 0,
+            gameHistory: [],
+            lastGameDate: null
+        };
+
+        let currentQuestionIndex = 0;
+        let currentScore = 0;
         let selectedAnswers = [];
         let answerChecked = false;
-        
+        let isNewRecord = false;
+        let questionsInGame = 5; // Количество вопросов в одной игре
+
+        // Загрузка данных пользователя
+        function loadUserData() {
+            const savedData = localStorage.getItem('lawGameUserData');
+            if (savedData) {
+                try {
+                    const parsed = JSON.parse(savedData);
+                    userData.bestScore = parsed.bestScore || 0;
+                    userData.gamesPlayed = parsed.gamesPlayed || 0;
+                    userData.totalScore = parsed.totalScore || 0;
+                    userData.gameHistory = parsed.gameHistory || [];
+                    userData.lastGameDate = parsed.lastGameDate || null;
+                } catch (e) {
+                    console.error('Ошибка загрузки данных:', e);
+                }
+            }
+            updateStartStats();
+        }
+
+        // Сохранение данных пользователя
+        function saveUserData() {
+            try {
+                localStorage.setItem('lawGameUserData', JSON.stringify(userData));
+            } catch (e) {
+                console.error('Ошибка сохранения данных:', e);
+            }
+        }
+
+        // Обновление статистики на стартовом экране
+        function updateStartStats() {
+            document.getElementById('bestScoreDisplay').textContent = userData.bestScore;
+            document.getElementById('gamesPlayed').textContent = userData.gamesPlayed;
+            document.getElementById('totalScore').textContent = userData.totalScore;
+            
+            // Показываем историю игр, если есть
+            if (userData.gameHistory.length > 0) {
+                showGameHistory();
+            }
+        }
+
+        // Показать историю игр
+        function showGameHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            
+            // Показываем последние 5 игр
+            const recentGames = userData.gameHistory.slice(-5).reverse();
+            
+            recentGames.forEach((game, index) => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                
+                const date = new Date(game.date);
+                const dateStr = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+                
+                item.innerHTML = `
+                    <span class="history-date">${dateStr}</span>
+                    <span class="history-score ${game.isRecord ? 'new-record' : ''}">${game.score} баллов ${game.isRecord ? '🏆' : ''}</span>
+                `;
+                historyList.appendChild(item);
+            });
+            
+            document.getElementById('gameHistory').style.display = 'block';
+        }
+
+        // Скрыть историю игр
+        function hideGameHistory() {
+            document.getElementById('gameHistory').style.display = 'none';
+        }
+
+        // Начать игру
         function startGame() {
+            loadUserData();
             document.getElementById('startScreen').style.display = 'none';
             document.getElementById('gameArea').style.display = 'block';
             resetGame();
             loadQuestion();
         }
-        
+
+        // Сброс игры
         function resetGame() {
-            currentQuestion = 0;
-            score = 0;
+            currentQuestionIndex = 0;
+            currentScore = 0;
             selectedAnswers = [];
             answerChecked = false;
-            updateScore();
+            isNewRecord = false;
+            
+            // Перемешиваем вопросы для каждой игры
+            shuffleQuestions();
+            
+            updateGameStats();
+            document.getElementById('recordBadge').style.display = 'none';
         }
-        
+
+        // Перемешать вопросы
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+
+        // Загрузка вопроса
         function loadQuestion() {
-            const q = questions[currentQuestion];
-            document.getElementById('questionNumber').textContent = `Вопрос ${currentQuestion + 1}/${questions.length}`;
+            const q = questions[currentQuestionIndex];
             document.getElementById('questionText').textContent = q.question;
             
             const optionsContainer = document.getElementById('optionsContainer');
@@ -422,45 +718,39 @@
             selectedAnswers = [];
             answerChecked = false;
             
-            // Очищаем контейнер изображения
-            document.getElementById('imageContainer').innerHTML = '';
-            
             // Сбрасываем кнопки
             document.getElementById('checkButton').disabled = true;
             document.getElementById('checkButton').style.display = 'inline-block';
             document.getElementById('skipButton').style.display = 'inline-block';
             document.getElementById('nextButton').style.display = 'none';
+            document.getElementById('restartButton')?.style.display = 'none';
             
             // Скрываем результат
             document.getElementById('resultMessage').style.display = 'none';
             
-            if (q.type === 1 || q.type === 2) {
-                q.options.forEach((option, index) => {
-                    const optionDiv = document.createElement('div');
-                    optionDiv.className = 'option';
-                    optionDiv.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
-                    optionDiv.onclick = () => selectAnswer(index + 1);
-                    optionsContainer.appendChild(optionDiv);
-                });
-            }
+            // Загружаем варианты ответов
+            q.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+                optionDiv.onclick = () => selectAnswer(index + 1);
+                optionsContainer.appendChild(optionDiv);
+            });
             
-            // Обновляем прогресс
-            const progress = ((currentQuestion) / questions.length) * 100;
-            document.getElementById('progress').style.width = `${progress}%`;
+            // Обновляем прогресс и статистику
+            updateGameStats();
         }
-        
+
+        // Выбор ответа
         function selectAnswer(answer) {
             if (answerChecked) return;
             
-            const q = questions[currentQuestion];
+            const q = questions[currentQuestionIndex];
             const options = document.querySelectorAll('.option');
             
             if (q.type === 1) {
-                // Снимаем выделение со всех
-                options.forEach(opt => {
-                    opt.classList.remove('selected');
-                });
-                // Выделяем выбранный
+                // Одиночный выбор
+                options.forEach(opt => opt.classList.remove('selected'));
                 options[answer - 1].classList.add('selected');
                 selectedAnswers = [answer];
             } else if (q.type === 2) {
@@ -477,17 +767,21 @@
             // Активируем кнопку "Проверить"
             document.getElementById('checkButton').disabled = false;
         }
-        
+
+        // Проверить ответ
         function checkAnswer() {
-            if (answerChecked) return;
+            if (answerChecked || selectedAnswers.length === 0) return;
             
-            const q = questions[currentQuestion];
+            const q = questions[currentQuestionIndex];
             const resultDiv = document.getElementById('resultMessage');
             const resultText = document.getElementById('resultText');
             const options = document.querySelectorAll('.option');
             
             // Показываем правильные/неправильные ответы
+            let isCorrect = false;
+            
             if (q.type === 1) {
+                // Одиночный выбор
                 options.forEach((opt, index) => {
                     if (index + 1 === q.correct) {
                         opt.classList.add('correct');
@@ -496,23 +790,12 @@
                     }
                 });
                 
-                if (selectedAnswers[0] === q.correct) {
-                    score += q.points;
-                    resultDiv.className = 'result correct';
-                    resultText.innerHTML = '✅ <b>Правильно!</b> ' + 
-                                          `<br><br>${q.explanation}` +
-                                          `<br><br>+${q.points} баллов`;
-                } else {
-                    resultDiv.className = 'result incorrect';
-                    resultText.innerHTML = '❌ <b>Неправильно.</b>' +
-                                          `<br><br>✅ Правильный ответ: ${q.options[q.correct - 1]}` +
-                                          `<br><br>${q.explanation}`;
-                }
+                isCorrect = selectedAnswers[0] === q.correct;
             } else if (q.type === 2) {
+                // Множественный выбор
                 const correctSorted = [...q.correct].sort();
                 const userSorted = [...selectedAnswers].sort();
                 
-                // Подсвечиваем варианты
                 options.forEach((opt, index) => {
                     if (q.correct.includes(index + 1)) {
                         opt.classList.add('correct');
@@ -521,40 +804,51 @@
                     }
                 });
                 
-                if (JSON.stringify(correctSorted) === JSON.stringify(userSorted)) {
-                    score += q.points;
-                    resultDiv.className = 'result correct';
-                    resultText.innerHTML = '✅ <b>Все правильно!</b> ' +
-                                          `<br><br>${q.explanation}` +
-                                          `<br><br>+${q.points} баллов`;
-                } else {
-                    resultDiv.className = 'result incorrect';
-                    const correctStr = q.correct.map(c => q.options[c-1]).join(', ');
-                    resultText.innerHTML = '❌ <b>Не все правильно.</b>' +
-                                          `<br><br>✅ Правильные ответы: ${correctStr}` +
-                                          `<br><br>${q.explanation}`;
-                }
+                isCorrect = JSON.stringify(correctSorted) === JSON.stringify(userSorted);
+            }
+            
+            // Обновляем счет
+            if (isCorrect) {
+                currentScore += q.points;
+                resultDiv.className = 'result correct';
+                resultText.innerHTML = '✅ <b>Правильно!</b> ' + 
+                                      `<br><br>${q.explanation}` +
+                                      `<br><br>+${q.points} баллов`;
+            } else {
+                resultDiv.className = 'result incorrect';
+                resultText.innerHTML = '❌ <b>Неправильно.</b>' +
+                                      `<br><br>✅ Правильный ответ: ${q.type === 1 ? q.options[q.correct - 1] : q.correct.map(c => q.options[c-1]).join(', ')}` +
+                                      `<br><br>${q.explanation}`;
             }
             
             resultDiv.style.display = 'block';
             answerChecked = true;
-            updateScore();
             
-            // Показываем кнопку "Следующий вопрос", скрываем "Проверить" и "Пропустить"
+            // Обновляем статистику
+            updateGameStats();
+            
+            // Меняем кнопки
             document.getElementById('checkButton').style.display = 'none';
             document.getElementById('skipButton').style.display = 'none';
-            document.getElementById('nextButton').style.display = 'inline-block';
+            
+            if (currentQuestionIndex < questionsInGame - 1) {
+                document.getElementById('nextButton').style.display = 'inline-block';
+            } else {
+                document.getElementById('nextButton').style.display = 'none';
+                document.querySelector('.button-restart').style.display = 'inline-block';
+            }
         }
-        
+
+        // Пропустить вопрос
         function skipQuestion() {
             if (answerChecked) return;
             
-            const q = questions[currentQuestion];
+            const q = questions[currentQuestionIndex];
             const resultDiv = document.getElementById('resultMessage');
             const resultText = document.getElementById('resultText');
+            const options = document.querySelectorAll('.option');
             
             // Показываем правильный ответ
-            const options = document.querySelectorAll('.option');
             if (q.type === 1) {
                 options[q.correct - 1].classList.add('correct');
             } else if (q.type === 2) {
@@ -570,76 +864,160 @@
             
             answerChecked = true;
             
-            // Показываем кнопку "Следующий вопрос", скрываем "Проверить" и "Пропустить"
+            // Меняем кнопки
             document.getElementById('checkButton').style.display = 'none';
             document.getElementById('skipButton').style.display = 'none';
-            document.getElementById('nextButton').style.display = 'inline-block';
-        }
-        
-        function nextQuestion() {
-            currentQuestion++;
             
-            if (currentQuestion < questions.length) {
+            if (currentQuestionIndex < questionsInGame - 1) {
+                document.getElementById('nextButton').style.display = 'inline-block';
+            } else {
+                document.getElementById('nextButton').style.display = 'none';
+                document.querySelector('.button-restart').style.display = 'inline-block';
+            }
+        }
+
+        // Следующий вопрос
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questionsInGame) {
                 loadQuestion();
             } else {
                 endGame();
             }
         }
-        
+
+        // Завершение игры
         function endGame() {
+            // Обновляем статистику пользователя
+            userData.gamesPlayed++;
+            userData.totalScore += currentScore;
+            
+            // Проверяем, побит ли рекорд
+            if (currentScore > userData.bestScore) {
+                userData.bestScore = currentScore;
+                isNewRecord = true;
+            }
+            
+            // Добавляем игру в историю
+            const gameRecord = {
+                date: new Date().toISOString(),
+                score: currentScore,
+                isRecord: isNewRecord
+            };
+            userData.gameHistory.push(gameRecord);
+            
+            // Сохраняем только последние 20 игр
+            if (userData.gameHistory.length > 20) {
+                userData.gameHistory = userData.gameHistory.slice(-20);
+            }
+            
+            // Сохраняем данные
+            saveUserData();
+            
+            // Показываем результаты
             document.getElementById('gameArea').innerHTML = `
                 <div class="question">
                     <div class="question-text">
                         🏆 <b>Игра завершена!</b>
                         <br><br>
-                        📊 <b>Твой результат:</b> ${score} баллов из ${questions.length * 10} возможных
+                        📊 <b>Твой результат:</b> ${currentScore} баллов из ${questionsInGame * 15} возможных
                         <br><br>
-                        ${score >= questions.length * 8 ? '🎯 Отлично! Ты знаток права!' : 
-                          score >= questions.length * 6 ? '👍 Хорошо! Продолжай учиться!' : 
+                        ${isNewRecord ? '🎉 <span class="new-record">НОВЫЙ РЕКОРД!</span>' : 
+                          currentScore >= questionsInGame * 12 ? '🎯 Отлично! Ты знаток права!' : 
+                          currentScore >= questionsInGame * 8 ? '👍 Хорошо! Продолжай учиться!' : 
                           '💪 Неплохо для начала! Попробуй еще раз!'}
                         <br><br>
-                        Правильных ответов: ${Math.round(score / 10)} из ${questions.length}
+                        Правильных ответов: ${Math.round(currentScore / 10)} из ${questionsInGame}
+                        ${isNewRecord ? '<br><br>🏆 Ты побил свой предыдущий рекорд!' : 
+                          userData.bestScore > currentScore ? `<br><br>🏆 Твой рекорд: ${userData.bestScore} баллов` : ''}
                     </div>
                 </div>
                 <div class="menu">
                     <div class="menu-buttons">
-                        <button class="menu-button" onclick="restartGame()">🔄 Начать заново</button>
+                        <button class="menu-button" onclick="restartGame()">🔄 Играть еще раз</button>
                         <button class="menu-button" onclick="backToMenu()">🏠 В главное меню</button>
+                        <button class="menu-button" onclick="showStats()">📈 Статистика</button>
                     </div>
                 </div>
             `;
         }
-        
+
+        // Перезапуск игры
         function restartGame() {
             resetGame();
             loadQuestion();
         }
-        
+
+        // Вернуться в меню
         function backToMenu() {
             document.getElementById('gameArea').style.display = 'none';
             document.getElementById('startScreen').style.display = 'block';
+            updateStartStats();
         }
-        
-        function updateScore() {
-            document.getElementById('score').textContent = score;
-        }
-        
-        function showRules() {
-            alert(`📚 Правила игры:\n\n1. Выбирай правильные ответы\n2. За правильный ответ: +10 баллов\n3. За несколько правильных ответов: +15 баллов\n4. Можно пропускать вопросы\n5. После проверки ответа нажми "Следующий вопрос"\n6. Играй и изучай права!`);
-        }
-        
-        function showTopics() {
-            const topics = [
-                "🎯 Основы права и законы",
-                "👶 Права детей",
-                "🏛 Государственное устройство Беларуси",
-                "⚖️ Обязанности граждан",
-                "📚 Образование и культура",
-                "🛡 Безопасность и защита"
-            ].join("\n\n");
+
+        // Обновление статистики в игре
+        function updateGameStats() {
+            document.getElementById('currentScore').textContent = currentScore;
+            document.getElementById('questionCounter').textContent = `${currentQuestionIndex + 1}/${questionsInGame}`;
+            document.getElementById('bestScoreGame').textContent = userData.bestScore;
             
-            alert(`Доступные темы для изучения:\n\n${topics}\n\nВыбери тему в меню бота!`);
+            if (currentScore > userData.bestScore && currentScore > 0) {
+                document.getElementById('recordBadge').style.display = 'inline-block';
+            } else {
+                document.getElementById('recordBadge').style.display = 'none';
+            }
+            
+            // Обновляем прогресс-бар
+            const progress = ((currentQuestionIndex) / questionsInGame) * 100;
+            document.getElementById('progress').style.width = `${progress}%`;
         }
+
+        // Показать статистику
+        function showStats() {
+            const accuracy = userData.gamesPlayed > 0 ? Math.round((userData.totalScore / (userData.gamesPlayed * questionsInGame * 10)) * 100) : 0;
+            
+            alert(`📊 Твоя статистика:\n\n` +
+                  `🏆 Лучший результат: ${userData.bestScore} баллов\n` +
+                  `🎮 Игр сыграно: ${userData.gamesPlayed}\n` +
+                  `📈 Всего набрано баллов: ${userData.totalScore}\n` +
+                  `🎯 Средняя точность: ${accuracy}%\n\n` +
+                  `Продолжай в том же духе! 💪`);
+        }
+
+        // Показать правила
+        function showRules() {
+            hideGameHistory();
+            alert(`📚 Правила игры:\n\n` +
+                  `1. Выбирай правильные ответы на вопросы\n` +
+                  `2. За правильный ответ: +10 баллов (один вариант)\n` +
+                  `3. За несколько правильных ответов: +15-20 баллов\n` +
+                  `4. Можно пропускать вопросы\n` +
+                  `5. После проверки ответа нажми "Далее"\n` +
+                  `6. Твой прогресс сохраняется автоматически\n` +
+                  `7. Постарайся побить свой рекорд!\n\n` +
+                  `Удачи! 🍀`);
+        }
+
+        // Показать темы
+        function showTopics() {
+            hideGameHistory();
+            alert(`🎯 Темы для изучения:\n\n` +
+                  `1. Основы права и Конституция\n` +
+                  `2. Права детей и подростков\n` +
+                  `3. Государственное устройство Беларуси\n` +
+                  `4. Обязанности граждан\n` +
+                  `5. Судебная система\n` +
+                  `6. Местное самоуправление\n` +
+                  `7. Международное право\n` +
+                  `8. Ответственность несовершеннолетних\n\n` +
+                  `Все темы включены в игру! 📚`);
+        }
+
+        // Инициализация при загрузке
+        window.onload = function() {
+            loadUserData();
+        };
     </script>
 </body>
 </html>
